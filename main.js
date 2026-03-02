@@ -5,8 +5,11 @@
   if (!gl) return;
 
   function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
     gl.viewport(0, 0, canvas.width, canvas.height);
   }
   resize();
@@ -22,7 +25,7 @@
 
   // Fragment shader — ASCII solar/plasma effect
   const fsSource = `
-    precision mediump float;
+    precision highp float;
     uniform float u_time;
     uniform vec2 u_resolution;
     uniform vec2 u_mouse;
@@ -84,8 +87,8 @@
       vec2 p = uv * 2.0 - 1.0;
       p.x *= u_resolution.x / u_resolution.y;
 
-      // ASCII grid
-      float cellSize = 12.0; // pixel size of each "character"
+      // ASCII grid — larger cells on mobile for cleaner look
+      float cellSize = u_resolution.x < 600.0 ? 8.0 : 12.0;
       vec2 cell = floor(gl_FragCoord.xy / cellSize);
       vec2 cellUV = cell * cellSize / u_resolution;
 
