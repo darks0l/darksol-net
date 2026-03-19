@@ -1,0 +1,3258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CODETEETH 🦷 — Pixel Art from Your Codebase | DARKSOL</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
+  <meta name="description" content="CODETEETH — Generates unique 1000×1000 pixel art from any public GitHub or GitLab repository. Your codebase, rendered with teeth.">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta property="og:title" content="CODETEETH 🦷 — Pixel Art from Your Repo">
+  <meta property="og:description" content="Your codebase, rendered with teeth. Unique deterministic pixel art from file structure, sizes, and language profile.">
+  <meta property="og:url" content="https://darksol.net/codeteeth">
+  <meta property="og:site_name" content="DARKSOL">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="https://darksol.net" class="nav-logo">DARKSOL 🌑</a>
+    <ul class="nav-links">
+      <li><a href="https://darksol.net">← Home</a></li>
+      <li><a href="https://darksol.net/terminal">Terminal</a></li>
+      <li><a href="https://casino.darksol.net" target="_blank">🎰 Casino</a></li>
+      <li><a href="#" class="nav-active">🦷 CODETEETH</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>CODETEETH 🦷</h1>
+    <p class="subtitle">Your repo, rendered with teeth.</p>
+    <p class="hero-desc">
+      Paste any public GitHub or GitLab URL. Get a unique 1000×1000 pixel art canvas
+      generated from your codebase's structure, file sizes, and language profile.<br>
+      <span class="hero-em">AI-enhanced composition. Client-side rendering. Your repo's soul, in pixels.</span>
+    </p>
+  </div>
+</section>
+
+<!-- INPUT -->
+<section class="input-section">
+  <div class="container">
+    <div class="input-card">
+      <div class="input-row">
+        <input type="text" id="repo-url"
+               placeholder="https://github.com/owner/repo"
+               autocomplete="off" spellcheck="false">
+        <button id="generate-btn" class="btn-primary">GENERATE</button>
+      </div>
+      <p class="rate-note">
+        ⚠ GitHub allows ~60 unauthenticated API requests/hr · Results are generated entirely in your browser
+      </p>
+      <div class="ai-toggle-row" id="ai-toggle-row">
+        <label class="ai-toggle-label">
+          <input type="checkbox" id="ai-enhanced-toggle">
+          <span class="toggle-checkmark">✓</span>
+          <span class="toggle-text">✨ AI Enhanced <span class="toggle-sub">— Claude Haiku analyzes your repo and enriches the canvas</span></span>
+        </label>
+      </div>
+    </div>
+    <div class="ai-settings-card" id="settings-card">
+      <button class="settings-toggle-btn" id="settings-toggle">⚙ Settings <span class="settings-arrow" id="settings-arrow">▼</span></button>
+      <div class="settings-panel" id="settings-panel" style="display:none">
+        <div class="settings-row">
+          <div class="settings-field-label">Anthropic API Key <span class="settings-note">— stored locally in your browser only</span></div>
+          <div class="api-key-row">
+            <input type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off" spellcheck="false" class="api-key-input">
+            <button class="btn-icon" id="show-key-btn" title="Show/hide key">👁</button>
+            <button class="btn-secondary" id="save-key-btn">Save</button>
+          </div>
+          <p class="settings-tip">Required for AI enhancement. Never sent to any DARKSOL server — stays in your browser.</p>
+          <div class="save-status" id="save-status"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CANVAS DISPLAY -->
+<section id="canvas-section" class="canvas-section" style="display:none">
+  <div class="container">
+    <div class="canvas-card">
+      <div id="canvas-loading" class="canvas-loading">
+        <div class="loader-grid" id="loader-grid"></div>
+        <p id="loading-text">Fetching repo data...</p>
+      </div>
+      <div id="canvas-result" style="display:none">
+        <div class="canvas-wrap">
+          <canvas id="codeteeth-canvas" width="1000" height="1000"></canvas>
+        </div>
+        <div class="canvas-controls">
+          <button id="download-btn" class="btn-secondary">↓ Download PNG</button>
+          <div id="repo-stats" class="repo-stats"></div>
+        </div>
+      </div>
+      <div id="canvas-error" class="canvas-error" style="display:none">
+        <p id="error-text">Something went wrong.</p>
+        <button id="retry-btn" class="btn-secondary">Try Again</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section">
+  <div class="container">
+    <h2 class="section-title">// GALLERY</h2>
+    <p class="section-desc">Pre-generated from real repos. Same repo always generates the same image.</p>
+    <div class="gallery-grid" id="gallery-grid"></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="container">
+    <h2 class="section-title">// HOW IT WORKS</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">01</div>
+        <h3>Fetch</h3>
+        <p>Your browser calls the GitHub/GitLab API directly. File tree, language breakdown, metadata — no server middleman.</p>
+      </div>
+      <div class="how-card how-card-ai">
+        <div class="how-num">02</div>
+        <h3>Analyze ✨</h3>
+        <p>Claude Haiku reads your repo and picks the perfect visual composition — hero elements, sprites, mood, and density.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">03</div>
+        <h3>Treemap</h3>
+        <p>Files grouped by directory, laid out using a binary-split treemap. Block size ∝ file byte size.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">04</div>
+        <h3>Theme</h3>
+        <p>Dominant language picks the visual theme. 10 distinct worlds: Neon City, Jungle, Forge, Circuit, and more.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">05</div>
+        <h3>Render</h3>
+        <p>Pixel art generated deterministically from a hash of your repo name. Same repo = identical canvas, forever.</p>
+      </div>
+    </div>
+    <div class="themes-row">
+      <span class="theme-tag">JS/TS → Neon City 🌆</span>
+      <span class="theme-tag">Python → Jungle Canopy 🌿</span>
+      <span class="theme-tag">Rust → Forge 🔥</span>
+      <span class="theme-tag">Go → Circuit Board 🔌</span>
+      <span class="theme-tag">Solidity → Dungeon 🏰</span>
+      <span class="theme-tag">C/C++ → Ancient Ruins 🏛</span>
+      <span class="theme-tag">Ruby → Crystal Cave 💎</span>
+      <span class="theme-tag">Java → Corporate Skyline 🏢</span>
+      <span class="theme-tag">Shell → Pipes & Plumbing 🔧</span>
+      <span class="theme-tag">Other → Patchwork 🎨</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>Built with teeth. 🌑 <a href="https://darksol.net">darksol.net</a></p>
+    <p class="footer-dim">Client-side only. No data is sent to any DARKSOL server. Your API calls go directly to GitHub/GitLab.</p>
+  </div>
+</footer>
+
+<style>
+/* ==============================
+   RESET & BASE
+   ============================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --bg-panel: rgba(15, 15, 25, 0.85);
+  --border: rgba(100, 140, 255, 0.15);
+  --glow: rgba(80, 130, 255, 0.3);
+  --blue: #4a8eff;
+  --blue-bright: #6ab0ff;
+  --text: #e8e8f0;
+  --text-dim: #8888aa;
+  --mono: 'Space Mono', monospace;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ==============================
+   NAV
+   ============================== */
+#navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(10, 10, 15, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.nav-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-family: var(--mono);
+  transition: color 0.2s;
+}
+
+.nav-links a:hover, .nav-links a.nav-active {
+  color: var(--blue-bright);
+}
+
+/* ==============================
+   HERO
+   ============================== */
+.hero {
+  padding: 8rem 1.5rem 4rem;
+  text-align: center;
+  background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(74,142,255,0.08) 0%, transparent 70%);
+}
+
+.hero-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-family: var(--mono);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  text-shadow: 0 0 40px rgba(74,142,255,0.4);
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-family: var(--mono);
+  font-size: 1.2rem;
+  color: var(--blue-bright);
+  margin-bottom: 1.2rem;
+}
+
+.hero-desc {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.hero-em {
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+}
+
+/* ==============================
+   CONTAINER
+   ============================== */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ==============================
+   INPUT SECTION
+   ============================== */
+.input-section {
+  padding: 1.5rem 0 3rem;
+}
+
+.input-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 40px rgba(74,142,255,0.05);
+}
+
+.input-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+#repo-url {
+  flex: 1;
+  background: rgba(5, 5, 15, 0.8);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#repo-url:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(74,142,255,0.15);
+}
+
+#repo-url::placeholder {
+  color: var(--text-dim);
+}
+
+.btn-primary {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.btn-primary:hover {
+  background: var(--blue-bright);
+  box-shadow: 0 0 20px rgba(74,142,255,0.4);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--blue-bright);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  border-color: var(--blue);
+  background: rgba(74,142,255,0.08);
+}
+
+.rate-note {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  font-family: var(--mono);
+}
+
+/* ==============================
+   CANVAS SECTION
+   ============================== */
+.canvas-section {
+  padding: 0 0 3rem;
+}
+
+.canvas-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+  min-height: 200px;
+}
+
+/* Loading */
+.canvas-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: 1.5rem;
+}
+
+.loader-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 12px);
+  gap: 3px;
+}
+
+.loader-pixel {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  animation: pixelPulse 1.2s infinite;
+}
+
+@keyframes pixelPulse {
+  0%, 100% { opacity: 0.15; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+#loading-text {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+/* Canvas display */
+.canvas-wrap {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  line-height: 0;
+}
+
+#codeteeth-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.canvas-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.repo-stats {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.repo-stats span {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.stat-accent {
+  color: var(--blue-bright);
+}
+
+/* Error */
+.canvas-error {
+  text-align: center;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+#error-text {
+  font-family: var(--mono);
+  color: #ff6666;
+  font-size: 0.9rem;
+}
+
+/* ==============================
+   GALLERY
+   ============================== */
+.gallery-section {
+  padding: 2rem 0 4rem;
+}
+
+.section-title {
+  font-family: var(--mono);
+  font-size: 1rem;
+  color: var(--blue);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.section-desc {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-bottom: 2rem;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.2rem;
+}
+
+.gallery-item {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.gallery-item:hover {
+  border-color: rgba(100,140,255,0.4);
+  box-shadow: 0 0 20px rgba(74,142,255,0.1);
+}
+
+.gallery-canvas-wrap {
+  line-height: 0;
+  background: #030308;
+}
+
+.gallery-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.gallery-label {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.gallery-label strong {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--blue-bright);
+  margin-bottom: 0.2rem;
+}
+
+.gallery-label span {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.gallery-generating {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #030308;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+/* ==============================
+   HOW IT WORKS
+   ============================== */
+.how-section {
+  padding: 2rem 0 4rem;
+  border-top: 1px solid var(--border);
+}
+
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.how-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.2rem;
+  backdrop-filter: blur(8px);
+}
+
+.how-num {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--blue);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.1em;
+}
+
+.how-card h3 {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.how-card p {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+.themes-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.theme-tag {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  background: rgba(74,142,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.3rem 0.7rem;
+}
+
+/* ==============================
+   FOOTER
+   ============================== */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 0;
+  text-align: center;
+}
+
+footer p {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-bottom: 0.4rem;
+}
+
+footer a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: var(--blue-bright);
+}
+
+.footer-dim {
+  font-size: 0.72rem !important;
+  opacity: 0.6;
+}
+
+/* ==============================
+   AI TOGGLE
+   ============================== */
+.ai-toggle-row {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.ai-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ai-toggle-label input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-checkmark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: rgba(5, 5, 15, 0.8);
+  font-size: 0.65rem;
+  color: transparent;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.ai-toggle-label input:checked ~ .toggle-checkmark {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+
+.toggle-text {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--text);
+}
+
+.toggle-sub {
+  color: var(--text-dim);
+  font-size: 0.75rem;
+}
+
+.ai-toggle-label.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ==============================
+   AI SETTINGS CARD
+   ============================== */
+.ai-settings-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+}
+
+.settings-toggle-btn {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  padding: 0.7rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: color 0.2s, background 0.2s;
+}
+
+.settings-toggle-btn:hover {
+  color: var(--text);
+  background: rgba(74,142,255,0.04);
+}
+
+.settings-arrow {
+  font-size: 0.7rem;
+  transition: transform 0.2s;
+}
+
+.settings-arrow.open {
+  transform: rotate(180deg);
+}
+
+.settings-panel {
+  border-top: 1px solid var(--border);
+  padding: 1rem 1rem 1rem;
+}
+
+.settings-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.settings-field-label {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--text);
+}
+
+.settings-note {
+  color: var(--text-dim);
+  font-size: 0.72rem;
+}
+
+.api-key-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.api-key-input {
+  flex: 1;
+  background: rgba(5, 5, 15, 0.8);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.api-key-input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(74,142,255,0.15);
+}
+
+.api-key-input::placeholder {
+  color: var(--text-dim);
+  opacity: 0.5;
+}
+
+.btn-icon {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-icon:hover {
+  border-color: var(--blue);
+  color: var(--text);
+}
+
+.settings-tip {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  line-height: 1.5;
+}
+
+.save-status {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: #5cb865;
+  min-height: 1em;
+}
+
+/* AI How-It-Works card highlight */
+.how-card-ai {
+  border-color: rgba(74,142,255,0.3);
+  background: rgba(74,142,255,0.04);
+}
+
+.how-card-ai .how-num {
+  color: var(--blue-bright);
+}
+
+/* ==============================
+   RESPONSIVE
+   ============================== */
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+  .input-row { flex-direction: column; }
+  .btn-primary { width: 100%; }
+  .hero { padding: 5rem 1rem 2rem; }
+  .api-key-row { flex-wrap: wrap; }
+}
+</style>
+
+<script>
+'use strict';
+
+// ============================================================
+//  CONSTANTS
+// ============================================================
+const CS = 1000;       // canvas size
+const IB = 60;         // info bar height
+const TH = CS - IB;   // treemap height
+const PX = 4;          // fat pixel size
+
+// ============================================================
+//  PRNG  —  mulberry32
+// ============================================================
+function mkRng(seed) {
+  let s = (seed >>> 0) || 1;
+  return () => {
+    s = (s + 0x6D2B79F5) >>> 0;
+    let t = s;
+    t = Math.imul(t ^ (t >>> 15), 1 | t);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 0x100000000;
+  };
+}
+
+function hashStr(str) {
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < str.length; i++) {
+    h = Math.imul(h ^ str.charCodeAt(i), 16777619) >>> 0;
+  }
+  return h;
+}
+
+// ============================================================
+//  TREEMAP  —  recursive binary split
+// ============================================================
+function treemap(items, rect) {
+  items = items.filter(i => i.size > 0);
+  if (!items.length) return [];
+  if (items.length === 1) return [{ ...items[0], rect }];
+
+  const total = items.reduce((s, i) => s + i.size, 0);
+  const horiz = rect.w >= rect.h;
+
+  let cum = 0, split = 1;
+  const half = total / 2;
+  for (let i = 0; i < items.length - 1; i++) {
+    cum += items[i].size;
+    if (cum >= half) { split = i + 1; break; }
+  }
+
+  const L = items.slice(0, split);
+  const R = items.slice(split);
+  const lf = L.reduce((s, i) => s + i.size, 0) / total;
+
+  let lr, rr;
+  if (horiz) {
+    const sx = Math.round(rect.x + rect.w * lf);
+    lr = { x: rect.x, y: rect.y, w: sx - rect.x, h: rect.h };
+    rr = { x: sx,     y: rect.y, w: rect.x + rect.w - sx, h: rect.h };
+  } else {
+    const sy = Math.round(rect.y + rect.h * lf);
+    lr = { x: rect.x, y: rect.y, w: rect.w, h: sy - rect.y };
+    rr = { x: rect.x, y: sy,     w: rect.w, h: rect.y + rect.h - sy };
+  }
+
+  return [...treemap(L, lr), ...treemap(R, rr)];
+}
+
+function buildLayout(files) {
+  // Group by top-level dir
+  const groups = {};
+  for (const f of files) {
+    // Enrich with ext if missing
+    if (!f.ext) {
+      const fname = f.path.split('/').pop();
+      f.ext = fname.includes('.') ? fname.split('.').pop().toLowerCase() : '';
+    }
+    const key = f.path.includes('/') ? f.path.split('/')[0] : '__root__';
+    if (!groups[key]) groups[key] = { name: key, size: 0, files: [] };
+    groups[key].files.push(f);
+    groups[key].size += f.size;
+  }
+
+  const glist = Object.values(groups).sort((a, b) => b.size - a.size);
+  const topLayout = treemap(
+    glist.map(g => ({ size: g.size, name: g.name })),
+    { x: 0, y: 0, w: CS, h: TH }
+  );
+
+  const result = [];
+  for (const top of topLayout) {
+    const g = groups[top.name];
+    if (!g || !g.files.length) continue;
+    g.files.forEach(f => { if (f.size < 50) f.size = 50; });
+    const sub = treemap(g.files, top.rect);
+    for (const item of sub) result.push({ ...item, group: top.name });
+  }
+  return result;
+}
+
+// ============================================================
+//  EXT → LANGUAGE HINT
+// ============================================================
+function extLang(ext) {
+  const m = {
+    js: 'js', mjs: 'js', cjs: 'js',
+    ts: 'ts', tsx: 'ts', jsx: 'ts',
+    py: 'py', pyi: 'py',
+    rs: 'rs',
+    go: 'go',
+    sol: 'sol',
+    c: 'c', h: 'c', cpp: 'cpp', cc: 'cpp', cxx: 'cpp', hpp: 'cpp',
+    rb: 'rb',
+    java: 'java', kt: 'java', scala: 'java',
+    sh: 'sh', bash: 'sh', zsh: 'sh',
+    css: 'css', scss: 'css', less: 'css',
+    html: 'html', htm: 'html',
+    json: 'json', yaml: 'json', yml: 'json', toml: 'json',
+    md: 'md', txt: 'md',
+  };
+  return m[ext] || 'other';
+}
+
+// ============================================================
+//  THEME DEFINITIONS
+// ============================================================
+const THEMES = {};
+
+// ---- NEON CITY (JS/TS) ----
+THEMES.neon = {
+  name: 'Neon City', langLabel: 'JavaScript / TypeScript',
+  bg: '#030510',
+  infoBg: '#020308', infoAccent: '#00fff9', infoText: '#e8e8f0',
+  pal: [
+    '#030510',  // 0 bg
+    '#0d1020',  // 1 dark wall
+    '#161835',  // 2 mid wall
+    '#0f1530',  // 3 alt wall
+    '#00fff9',  // 4 cyan
+    '#ff2d95',  // 5 magenta
+    '#ffe900',  // 6 yellow
+    '#4a8eff',  // 7 blue neon
+    '#050820',  // 8 structure line
+    '#102030',  // 9 rain
+  ],
+  render(ctx, rect, rng, item) {
+    const W = Math.max(1, Math.floor(rect.w / PX));
+    const H = Math.max(1, Math.floor(rect.h / PX));
+    const p = this.pal;
+
+    const wallColor = p[1 + (Math.floor(rng() * 3))];
+    const neonIdx = 4 + Math.floor(rng() * 4);
+    const neonColor = p[neonIdx];
+    const winChance = 0.07 + rng() * 0.10;
+
+    for (let py = 0; py < H; py++) {
+      const cy = Math.floor(rect.y + py * PX);
+      const ph = Math.min(PX, Math.floor(rect.y + rect.h) - cy);
+      if (ph <= 0) break;
+
+      for (let px = 0; px < W; px++) {
+        const cx = Math.floor(rect.x + px * PX);
+        const pw = Math.min(PX, Math.floor(rect.x + rect.w) - cx);
+        if (pw <= 0) break;
+
+        const r = rng();
+        let color;
+
+        if (py === 0) {
+          color = neonColor;
+        } else if (py === 1 && H > 5) {
+          color = p[4 + ((neonIdx - 4 + 1) % 4)];
+        } else if (px % 8 === 0 && py > 2) {
+          color = p[8]; // vertical structure line
+        } else if (r < winChance) {
+          const wr = rng();
+          color = wr < 0.6 ? '#ffff99' : wr < 0.8 ? '#88ffff' : '#ff88cc';
+        } else if (r < winChance + 0.012) {
+          color = p[9]; // rain streak
+        } else {
+          color = wallColor;
+        }
+
+        ctx.fillStyle = color;
+        ctx.fillRect(cx, cy, pw, ph);
+      }
+    }
+    ctx.strokeStyle = neonColor;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(Math.floor(rect.x) + 0.5, Math.floor(rect.y) + 0.5,
+                   Math.ceil(rect.w) - 1, Math.ceil(rect.h) - 1);
+  }
+};
+
+// ---- JUNGLE CANOPY (Python) ----
+THEMES.jungle = {
+  name: 'Jungle Canopy', langLabel: 'Python',
+  bg: '#060e07',
+  infoBg: '#030803', infoAccent: '#5cb865', infoText: '#d8f0da',
+  pal: [
+    '#060e07',  // 0 dark bg
+    '#1a3a1c',  // 1 deep canopy
+    '#2d5a30',  // 2 mid canopy
+    '#4a8a50',  // 3 bright canopy
+    '#6dbf72',  // 4 leaf highlight
+    '#86d48a',  // 5 bright leaf
+    '#1a4020',  // 6 vine
+    '#5c3a18',  // 7 trunk
+    '#3a2410',  // 8 dark trunk
+    '#0d1a0e',  // 9 ground
+  ],
+  render(ctx, rect, rng, item) {
+    const W = Math.max(1, Math.floor(rect.w / PX));
+    const H = Math.max(1, Math.floor(rect.h / PX));
+    const p = this.pal;
+
+    const vineX1 = 2 + Math.floor(rng() * Math.max(1, W - 4));
+    const vineX2 = vineX1 + 4 + Math.floor(rng() * 4);
+    const trunkZone = 0.75 + rng() * 0.15;
+    const groundZone = 0.90;
+
+    for (let py = 0; py < H; py++) {
+      const cy = Math.floor(rect.y + py * PX);
+      const ph = Math.min(PX, Math.floor(rect.y + rect.h) - cy);
+      if (ph <= 0) break;
+      const yf = py / Math.max(H - 1, 1);
+
+      for (let px = 0; px < W; px++) {
+        const cx = Math.floor(rect.x + px * PX);
+        const pw = Math.min(PX, Math.floor(rect.x + rect.w) - cx);
+        if (pw <= 0) break;
+
+        const r = rng();
+        let color;
+
+        if (yf > groundZone) {
+          color = p[9];
+        } else if (yf > trunkZone) {
+          // trunk zone
+          const ti = px % (W > 8 ? 7 : 5);
+          color = (ti < 3) ? p[7] : p[8];
+        } else if (yf < 0.25) {
+          // canopy top — bright dithered leaves
+          const dither = (px + py) % 2 === 0;
+          if (r < 0.20) color = p[5];
+          else if (dither) color = p[4];
+          else color = p[3];
+        } else {
+          // mid canopy
+          if (px === vineX1 || px === vineX2) {
+            color = p[6];
+          } else if (r < 0.08) {
+            color = p[4]; // bright leaf spot
+          } else if (r < 0.20) {
+            color = p[3];
+          } else {
+            color = p[2];
+          }
+        }
+
+        ctx.fillStyle = color;
+        ctx.fillRect(cx, cy, pw, ph);
+      }
+    }
+    ctx.strokeStyle = p[6];
+    ctx.lineWidth = 1;
+    ctx.strokeRect(Math.floor(rect.x) + 0.5, Math.floor(rect.y) + 0.5,
+                   Math.ceil(rect.w) - 1, Math.ceil(rect.h) - 1);
+  }
+};
+
+// ---- FORGE (Rust) ----
+THEMES.forge = {
+  name: 'Forge', langLabel: 'Rust',
+  bg: '#100805',
+  infoBg: '#0a0503', infoAccent: '#f07030', infoText: '#f0d0c0',
+  pal: [
+    '#100805',  // 0 bg
+    '#1a1005',  // 1 charcoal
+    '#2a1808',  // 2 dark coal
+    '#c04010',  // 3 embers
+    '#e05020',  // 4 hot orange
+    '#f07030',  // 5 orange
+    '#ffa040',  // 6 bright orange
+    '#ffe850',  // 7 yellow-hot
+    '#ffffa8',  // 8 spark
+    '#3a2010',  // 9 warm dark
+  ],
+  render(ctx, rect, rng, item) {
+    const W = Math.max(1, Math.floor(rect.w / PX));
+    const H = Math.max(1, Math.floor(rect.h / PX));
+    const p = this.pal;
+
+    for (let py = 0; py < H; py++) {
+      const cy = Math.floor(rect.y + py * PX);
+      const ph = Math.min(PX, Math.floor(rect.y + rect.h) - cy);
+      if (ph <= 0) break;
+      const yf = py / Math.max(H - 1, 1);
+
+      for (let px = 0; px < W; px++) {
+        const cx = Math.floor(rect.x + px * PX);
+        const pw = Math.min(PX, Math.floor(rect.x + rect.w) - cx);
+        if (pw <= 0) break;
+
+        const r = rng();
+        let color;
+
+        if (yf < 0.08) {
+          // Bayer-dithered hot zone top
+          const b = (px * 2 + py) % 4;
+          color = b < 2 ? p[7] : p[6];
+        } else if (yf < 0.20) {
+          const b = (px + py * 3) % 4;
+          color = b === 0 ? p[7] : b < 3 ? p[5] : p[4];
+        } else if (yf < 0.40) {
+          if (r < 0.06) color = p[4];
+          else if (r < 0.10) color = p[3];
+          else color = p[9];
+        } else {
+          if (r < 0.020) color = p[3];
+          else if (r < 0.004) color = p[8]; // spark!
+          else if ((px + py * 2) % 6 === 0) color = p[2];
+          else color = p[1];
+        }
+
+        ctx.fillStyle = color;
+        ctx.fillRect(cx, cy, pw, ph);
+      }
+    }
+    ctx.strokeStyle = p[5];
+    ctx.lineWidth = 1;
+    ctx.strokeRect(Math.floor(rect.x) + 0.5, Math.floor(rect.y) + 0.5,
+                   Math.ceil(rect.w) - 1, Math.ceil(rect.h) - 1);
+  }
+};
+
+// ---- CIRCUIT BOARD (Go) ----
+THEMES.circuit = {
+  name: 'Circuit Board', langLabel: 'Go',
+  bg: '#020802',
+  infoBg: '#010501', infoAccent: '#00cc44', infoText: '#c0f0d0',
+  pal: [
+    '#020802',  // 0 substrate
+    '#050f05',  // 1 dark bg
+    '#0a1a0a',  // 2 chip body
+    '#006622',  // 3 trace dark
+    '#00aa36',  // 4 trace
+    '#00cc44',  // 5 trace bright
+    '#00ff66',  // 6 pad bright
+    '#003311',  // 7 pcb dark
+    '#ccffcc',  // 8 via bright
+    '#1a3a1a',  // 9 component fill
+  ],
+  render(ctx, rect, rng, item) {
+    const W = Math.max(1, Math.floor(rect.w / PX));
+    const H = Math.max(1, Math.floor(rect.h / PX));
+    const p = this.pal;
+
+    const traceSpacingX = 5 + Math.floor(rng() * 3);
+    const traceSpacingY = 5 + Math.floor(rng() * 3);
+
+    for (let py = 0; py < H; py++) {
+      const cy = Math.floor(rect.y + py * PX);
+      const ph = Math.min(PX, Math.floor(rect.y + rect.h) - cy);
+      if (ph <= 0) break;
+
+      const isTraceY = (py % traceSpacingY === 0);
+
+      for (let px = 0; px < W; px++) {
+        const cx = Math.floor(rect.x + px * PX);
+        const pw = Math.min(PX, Math.floor(rect.x + rect.w) - cx);
+        if (pw <= 0) break;
+
+        const isTraceX = (px % traceSpacingX === 0);
+        const r = rng();
+        let color;
+
+        if (isTraceX && isTraceY) {
+          color = p[6]; // via / pad
+        } else if (isTraceX || isTraceY) {
+          color = p[5]; // trace
+        } else if (r < 0.008) {
+          color = p[8]; // solder spot
+        } else if (r < 0.02) {
+          color = p[4]; // dim trace remnant
+        } else if ((px / traceSpacingX + py / traceSpacingY) % 2 === 0) {
+          color = p[2]; // component area
+        } else {
+          color = p[1]; // substrate
+        }
+
+        ctx.fillStyle = color;
+        ctx.fillRect(cx, cy, pw, ph);
+      }
+    }
+    ctx.strokeStyle = p[5];
+    ctx.lineWidth = 1;
+    ctx.strokeRect(Math.floor(rect.x) + 0.5, Math.floor(rect.y) + 0.5,
+                   Math.ceil(rect.w) - 1, Math.ceil(rect.h) - 1);
+  }
+};
+
+// ---- DUNGEON (Solidity) ----
+THEMES.dungeon = {
+  name: 'Dungeon', langLabel: 'Solidity',
+  bg: '#0a0618',
+  infoBg: '#060312', infoAccent: '#c8a800', infoText: '#f0e0c0',
+  pal: [
+    '#0a0618',  // 0 bg
+    '#200f38',  // 1 stone dark
+    '#2a1845',  // 2 stone mid
+    '#3d2060',  // 3 stone light
+    '#060310',  // 4 mortar
+    '#c8a800',  // 5 gold
+    '#ffd700',  // 6 gold bright
+    '#6a3800',  // 7 rust
+    '#1a0f28',  // 8 shadow stone
+    '#503080',  // 9 arcane glow
+  ],
+  render(ctx, rect, rng, item) {
+    const W = Math.max(1, Math.floor(rect.w / PX));
+    const H = Math.max(1, Math.floor(rect.h / PX));
+    const p = this.pal;
+    const stoneColors = [p[1], p[2], p[3], p[8]];
+
+    for (let py = 0; py < H; py++) {
+      const cy = Math.floor(rect.y + py * PX);
+      const ph = Math.min(PX, Math.floor(rect.y + rect.h) - cy);
+      if (ph <= 0) break;
+
+      const isHMortar = (py % 4 === 0);
+      const brickRow = Math.floor(py / 4);
+      const offset = (brickRow % 2) * 2;
+
+      for (let px = 0; px < W; px++) {
+        const cx = Math.floor(rect.x + px * PX);
+        const pw = Math.min(PX, Math.floor(rect.x + rect.w) - cx);
+        if (pw <= 0) break;
+
+        const isVMortar = ((px + offset) % 4 === 0);
+        const r = rng();
+        let color;
+
+        if (isHMortar || isVMortar) {
+          color = p[4]; // mortar
+        } else {
+          const brickIdx = (Math.floor((px + offset) / 4) + brickRow * 3) % 4;
+          // Arcane glow chance on certain bricks
+          if (r < 0.03) color = p[9];
+          else if (r < 0.06 && py < 2) color = p[5]; // gold shimmer at top
+          else color = stoneColors[brickIdx];
+        }
+
+        ctx.fillStyle = color;
+        ctx.fillRect(cx, cy, pw, ph);
+      }
+    }
+    ctx.strokeStyle = p[5];
+    ctx.lineWidth = 1;
+    ctx.strokeRect(Math.floor(rect.x) + 0.5, Math.floor(rect.y) + 0.5,
+                   Math.ceil(rect.w) - 1, Math.ceil(rect.h) - 1);
+  }
+};
+
+// ---- ANCIENT RUINS (C/C++) ----
+THEMES.ruins = {
+  name: 'Ancient Ruins', langLabel: 'C / C++',
+  bg: '#120e06',
+  infoBg: '#0c0a04', infoAccent: '#c4a060', infoText: '#f0e8d0',
+  pal: [
+    '#120e06',  // 0 bg
+    '#3d2a10',  // 1 shadow stone
+    '#6b4c20',  // 2 stone dark
+    '#9a7040',  // 3 stone mid
+    '#c4a060',  // 4 stone light
+    '#e0c080',  // 5 highlight
+    '#1a1208',  // 6 mortar/crack
+    '#080604',  // 7 deep crack
+    '#2a1e0c',  // 8 dark fill
+    '#ddb870',  // 9 very light stone
+  ],
+  render(ctx, rect, rng, item) {
+    const W = Math.max(1, Math.floor(rect.w / PX));
+    const H = Math.max(1, Math.floor(rect.h / PX));
+    const p = this.pal;
+    const stoneColors = [p[2], p[3], p[4], p[3], p[2], p[5]];
+
+    // Determine crack column (deterministic from rng start)
+    const crackX = (W > 6) ? 3 + Math.floor(rng() * (W - 6)) : -1;
+    const courseH = 5; // stone course height in fat pixels
+
+    for (let py = 0; py < H; py++) {
+      const cy = Math.floor(rect.y + py * PX);
+      const ph = Math.min(PX, Math.floor(rect.y + rect.h) - cy);
+      if (ph <= 0) break;
+
+      const isMortar = (py % courseH === 0);
+      const course = Math.floor(py / courseH);
+
+      for (let px = 0; px < W; px++) {
+        const cx = Math.floor(rect.x + px * PX);
+        const pw = Math.min(PX, Math.floor(rect.x + rect.w) - cx);
+        if (pw <= 0) break;
+
+        const r = rng();
+        let color;
+
+        if (px === crackX && !isMortar) {
+          // crack — skip some courses
+          color = course % 3 === 0 ? p[7] : p[6];
+        } else if (isMortar) {
+          color = p[6];
+        } else if (px % 10 === 0) {
+          // column line (slightly darker)
+          color = p[1];
+        } else {
+          const si = (px + course * 2) % stoneColors.length;
+          if (r < 0.04) color = p[5]; // highlight fleck
+          else if (r < 0.07) color = p[1]; // shadow fleck
+          else color = stoneColors[si];
+        }
+
+        ctx.fillStyle = color;
+        ctx.fillRect(cx, cy, pw, ph);
+      }
+    }
+    ctx.strokeStyle = p[4];
+    ctx.lineWidth = 1;
+    ctx.strokeRect(Math.floor(rect.x) + 0.5, Math.floor(rect.y) + 0.5,
+                   Math.ceil(rect.w) - 1, Math.ceil(rect.h) - 1);
+  }
+};
+
+// ---- CRYSTAL CAVE (Ruby) ----
+THEMES.crystal = {
+  name: 'Crystal Cave', langLabel: 'Ruby',
+  bg: '#08021a',
+  infoBg: '#050112', infoAccent: '#e050b0', infoText: '#f8d0f0',
+  pal: [
+    '#08021a',  // 0 cave dark
+    '#100530',  // 1 cave mid
+    '#1a0845',  // 2 cave light
+    '#6b1f7a',  // 3 crystal shadow
+    '#a02878',  // 4 crystal mid
+    '#d43090',  // 5 crystal bright
+    '#ff50c0',  // 6 crystal vivid
+    '#7020b0',  // 7 purple variant
+    '#b030d0',  // 8 purple bright
+    '#ffe8f8',  // 9 sparkle
+  ],
+  render(ctx, rect, rng, item) {
+    const W = Math.max(1, Math.floor(rect.w / PX));
+    const H = Math.max(1, Math.floor(rect.h / PX));
+    const p = this.pal;
+
+    // Crystal grows from bottom, height = 30-70% of block
+    const crystalFrac = 0.30 + rng() * 0.40;
+    const crystalTop = Math.floor(H * (1 - crystalFrac));
+
+    // Crystal column: alternates between pink and purple variants
+    const usePurple = rng() < 0.35;
+    const cBright = usePurple ? p[8] : p[6];
+    const cMid   = usePurple ? p[7] : p[5];
+    const cDark  = usePurple ? p[3] : p[4];
+
+    for (let py = 0; py < H; py++) {
+      const cy = Math.floor(rect.y + py * PX);
+      const ph = Math.min(PX, Math.floor(rect.y + rect.h) - cy);
+      if (ph <= 0) break;
+
+      const inCrystal = py >= crystalTop;
+      const depthInCrystal = py - crystalTop;
+
+      for (let px = 0; px < W; px++) {
+        const cx = Math.floor(rect.x + px * PX);
+        const pw = Math.min(PX, Math.floor(rect.x + rect.w) - cx);
+        if (pw <= 0) break;
+
+        const r = rng();
+        let color;
+
+        if (inCrystal) {
+          // Crystal facets based on position
+          const facet = Math.floor(px / 3) % 3;
+          const depthFrac = depthInCrystal / Math.max(H - crystalTop, 1);
+          if (r < 0.025) {
+            color = p[9]; // sparkle
+          } else if (facet === 0) {
+            color = depthFrac < 0.3 ? cBright : cMid;
+          } else if (facet === 1) {
+            color = cMid;
+          } else {
+            color = depthFrac < 0.5 ? cMid : cDark;
+          }
+        } else {
+          // Cave
+          if (r < 0.005) color = p[9]; // distant sparkle
+          else if ((px + py) % 7 === 0) color = p[2];
+          else if (py < 2) color = p[2];
+          else color = p[1];
+        }
+
+        ctx.fillStyle = color;
+        ctx.fillRect(cx, cy, pw, ph);
+      }
+    }
+    ctx.strokeStyle = cBright;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(Math.floor(rect.x) + 0.5, Math.floor(rect.y) + 0.5,
+                   Math.ceil(rect.w) - 1, Math.ceil(rect.h) - 1);
+  }
+};
+
+// ---- CORPORATE SKYLINE (Java) ----
+THEMES.corporate = {
+  name: 'Corporate Skyline', langLabel: 'Java',
+  bg: '#0a0a0e',
+  infoBg: '#070710', infoAccent: '#8888aa', infoText: '#ccccdd',
+  pal: [
+    '#0a0a0e',  // 0 bg
+    '#1a1a22',  // 1 wall dark
+    '#252530',  // 2 wall mid
+    '#2e2e3e',  // 3 wall light
+    '#0f0f18',  // 4 divider
+    '#886622',  // 5 window lit
+    '#ccaa66',  // 6 window bright
+    '#1a1508',  // 7 window dark
+    '#3a3a50',  // 8 wall highlight
+    '#444455',  // 9 sky band
+  ],
+  render(ctx, rect, rng, item) {
+    const W = Math.max(1, Math.floor(rect.w / PX));
+    const H = Math.max(1, Math.floor(rect.h / PX));
+    const p = this.pal;
+
+    const wallColor = p[1 + Math.floor(rng() * 3)];
+    const winLitProb = 0.55 + rng() * 0.15;
+
+    for (let py = 0; py < H; py++) {
+      const cy = Math.floor(rect.y + py * PX);
+      const ph = Math.min(PX, Math.floor(rect.y + rect.h) - cy);
+      if (ph <= 0) break;
+
+      const isWinY = (py % 4 === 1 || py % 4 === 2);
+
+      for (let px = 0; px < W; px++) {
+        const cx = Math.floor(rect.x + px * PX);
+        const pw = Math.min(PX, Math.floor(rect.x + rect.w) - cx);
+        if (pw <= 0) break;
+
+        const isWinX = (px % 4 === 1 || px % 4 === 2);
+        const isDivider = (px % 14 === 0 && W > 14);
+        const r = rng();
+        let color;
+
+        if (isDivider) {
+          color = p[4];
+        } else if (isWinX && isWinY) {
+          // Window
+          color = r < winLitProb ? p[5] : p[7];
+          if (r < winLitProb && rng() < 0.15) color = p[6]; // bright window
+        } else {
+          color = wallColor;
+        }
+
+        ctx.fillStyle = color;
+        ctx.fillRect(cx, cy, pw, ph);
+      }
+    }
+    // Roof stripe
+    ctx.fillStyle = p[8];
+    ctx.fillRect(Math.floor(rect.x), Math.floor(rect.y), Math.ceil(rect.w), PX);
+
+    ctx.strokeStyle = p[4];
+    ctx.lineWidth = 1;
+    ctx.strokeRect(Math.floor(rect.x) + 0.5, Math.floor(rect.y) + 0.5,
+                   Math.ceil(rect.w) - 1, Math.ceil(rect.h) - 1);
+  }
+};
+
+// ---- PIPES & PLUMBING (Shell) ----
+THEMES.pipes = {
+  name: 'Pipes & Plumbing', langLabel: 'Shell',
+  bg: '#020a03',
+  infoBg: '#010602', infoAccent: '#00cc30', infoText: '#c0f0d0',
+  pal: [
+    '#020a03',  // 0 bg dark
+    '#050f05',  // 1 bg mid
+    '#0a1a0a',  // 2 bg light
+    '#004a18',  // 3 pipe outer
+    '#00a030',  // 4 pipe inner
+    '#00cc30',  // 5 pipe bright
+    '#00ff44',  // 6 pipe highlight
+    '#003310',  // 7 fitting dark
+    '#80ffa8',  // 8 flow indicator
+    '#1a3a20',  // 9 dirt/moss
+  ],
+  render(ctx, rect, rng, item) {
+    const W = Math.max(1, Math.floor(rect.w / PX));
+    const H = Math.max(1, Math.floor(rect.h / PX));
+    const p = this.pal;
+
+    const pipeY = Math.floor(H / 2); // center row
+
+    for (let py = 0; py < H; py++) {
+      const cy = Math.floor(rect.y + py * PX);
+      const ph = Math.min(PX, Math.floor(rect.y + rect.h) - cy);
+      if (ph <= 0) break;
+
+      const isPipeRow = (py >= pipeY - 1 && py <= pipeY + 1);
+
+      for (let px = 0; px < W; px++) {
+        const cx = Math.floor(rect.x + px * PX);
+        const pw = Math.min(PX, Math.floor(rect.x + rect.w) - cx);
+        if (pw <= 0) break;
+
+        const r = rng();
+        const isFitting = (px < 2 || px >= W - 2);
+        let color;
+
+        if (isFitting && Math.abs(py - pipeY) <= 2) {
+          // End fitting — slightly bulkier
+          color = p[3];
+        } else if (isPipeRow) {
+          if (py === pipeY - 1 || py === pipeY + 1) {
+            color = p[3]; // outer pipe
+          } else {
+            // inner pipe — flow arrows
+            const arrowPhase = px % 8;
+            if (arrowPhase === 4 || arrowPhase === 5) {
+              color = p[8]; // flow indicator
+            } else {
+              color = p[4];
+            }
+          }
+        } else {
+          // Background
+          if (r < 0.015) color = p[9]; // moss
+          else if ((px + py * 3) % 9 === 0) color = p[2];
+          else color = p[1];
+        }
+
+        ctx.fillStyle = color;
+        ctx.fillRect(cx, cy, pw, ph);
+      }
+    }
+    ctx.strokeStyle = p[5];
+    ctx.lineWidth = 1;
+    ctx.strokeRect(Math.floor(rect.x) + 0.5, Math.floor(rect.y) + 0.5,
+                   Math.ceil(rect.w) - 1, Math.ceil(rect.h) - 1);
+  }
+};
+
+// ---- PATCHWORK (Other/Mixed) ----
+THEMES.patchwork = {
+  name: 'Patchwork', langLabel: 'Mixed',
+  bg: '#0a080e',
+  infoBg: '#080610', infoAccent: '#8866cc', infoText: '#e0d8f8',
+  pal: [
+    // biome colors for patches
+    '#0d1020', '#1a1a35', '#00fff9',  // neon
+    '#1a3a1c', '#4a8a50', '#5cb865',  // jungle
+    '#1a1005', '#f07030', '#ffe850',  // forge
+    '#020802', '#00aa36', '#00ff66',  // circuit
+  ],
+  render(ctx, rect, rng, item) {
+    const W = Math.max(1, Math.floor(rect.w / PX));
+    const H = Math.max(1, Math.floor(rect.h / PX));
+
+    // Pick biome for this block based on file extension
+    const biomes = [
+      { bg: '#0d1020', mid: '#1a1a35', acc: '#00fff9' },  // neon
+      { bg: '#1a3a1c', mid: '#4a8a50', acc: '#5cb865' },  // jungle
+      { bg: '#1a1005', mid: '#e05020', acc: '#ffe850' },  // forge
+      { bg: '#020802', mid: '#00aa36', acc: '#00ff66' },  // circuit
+      { bg: '#0a0618', mid: '#3d2060', acc: '#c8a800' },  // dungeon
+      { bg: '#120e06', mid: '#9a7040', acc: '#c4a060' },  // ruins
+      { bg: '#08021a', mid: '#a02878', acc: '#ff50c0' },  // crystal
+      { bg: '#0a0a0e', mid: '#252530', acc: '#886622' },  // corporate
+    ];
+
+    const langHint = item ? extLang(item.ext || '') : 'other';
+    const langIdx = { js:0, ts:0, py:1, rs:2, go:3, sol:4, c:5, cpp:5, rb:6, java:7, sh:3 };
+    const biomeIdx = (langIdx[langHint] !== undefined ? langIdx[langHint] : (rng() * biomes.length | 0)) % biomes.length;
+    const biome = biomes[biomeIdx];
+
+    for (let py = 0; py < H; py++) {
+      const cy = Math.floor(rect.y + py * PX);
+      const ph = Math.min(PX, Math.floor(rect.y + rect.h) - cy);
+      if (ph <= 0) break;
+
+      for (let px = 0; px < W; px++) {
+        const cx = Math.floor(rect.x + px * PX);
+        const pw = Math.min(PX, Math.floor(rect.x + rect.w) - cx);
+        if (pw <= 0) break;
+
+        const r = rng();
+        let color;
+
+        if (py === 0 || py === H - 1 || px === 0 || px === W - 1) {
+          color = biome.acc; // stitch border
+        } else if (r < 0.08) {
+          color = biome.acc;
+        } else if ((px + py) % 5 < 2) {
+          color = biome.mid;
+        } else {
+          color = biome.bg;
+        }
+
+        ctx.fillStyle = color;
+        ctx.fillRect(cx, cy, pw, ph);
+      }
+    }
+    ctx.strokeStyle = biome.acc;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(Math.floor(rect.x) + 0.5, Math.floor(rect.y) + 0.5,
+                   Math.ceil(rect.w) - 1, Math.ceil(rect.h) - 1);
+  }
+};
+
+// ============================================================
+//  THEME SELECTOR
+// ============================================================
+function getThemeKey(languages) {
+  const entries = Object.entries(languages || {}).sort((a, b) => b[1] - a[1]);
+  const dominant = entries[0]?.[0] || '';
+  const map = {
+    'JavaScript': 'neon', 'TypeScript': 'neon', 'CoffeeScript': 'neon',
+    'Python': 'jungle',
+    'Rust': 'forge',
+    'Go': 'circuit',
+    'Solidity': 'dungeon', 'Vyper': 'dungeon',
+    'C': 'ruins', 'C++': 'ruins', 'C Header': 'ruins',
+    'Ruby': 'crystal', 'Swift': 'crystal',
+    'Java': 'corporate', 'Kotlin': 'corporate', 'Scala': 'corporate',
+    'Shell': 'pipes', 'Bash': 'pipes', 'PowerShell': 'pipes',
+    'PHP': 'neon', 'Vue': 'neon', 'Svelte': 'neon',
+    'C#': 'circuit', 'F#': 'circuit',
+    'Elixir': 'jungle', 'Erlang': 'jungle', 'Haskell': 'crystal',
+  };
+  return map[dominant] || 'patchwork';
+}
+
+// ============================================================
+//  INFO BAR
+// ============================================================
+function drawInfoBar(ctx, repoData, theme, fileCount, isAIEnhanced) {
+  const { repoName, languages, files } = repoData;
+  const y = TH;
+  const h = IB;
+
+  ctx.fillStyle = theme.infoBg || '#050810';
+  ctx.fillRect(0, y, CS, h);
+
+  // Top accent line
+  ctx.fillStyle = theme.infoAccent || '#4a8eff';
+  ctx.fillRect(0, y, CS, 2);
+
+  const midY = y + h / 2;
+  ctx.textBaseline = 'middle';
+  ctx.font = 'bold 13px "Space Mono", monospace';
+
+  // Left: repo name
+  ctx.fillStyle = theme.infoText || '#e8e8f0';
+  ctx.textAlign = 'left';
+  const displayName = repoName.length > 28 ? repoName.slice(0, 27) + '…' : repoName;
+  ctx.fillText(displayName, 12, midY);
+
+  // Center: lang + theme
+  ctx.fillStyle = theme.infoAccent || '#4a8eff';
+  ctx.textAlign = 'center';
+  const entries = Object.entries(languages || {}).sort((a, b) => b[1] - a[1]);
+  const dominant = entries[0]?.[0] || '?';
+  ctx.fillText(`${dominant} → ${theme.name}`, CS / 2, midY);
+
+  // Right: file count + size (+ AI badge if AI-enhanced)
+  ctx.fillStyle = theme.infoText || '#e8e8f0';
+  ctx.textAlign = 'right';
+  const totalSize = (files || []).reduce((s, f) => s + (f.size || 0), 0);
+  const aiTag = isAIEnhanced ? ' · ✨ AI' : '';
+  ctx.fillText(`${fileCount} files · ${fmtBytes(totalSize)}${aiTag}`, CS - 12, midY);
+}
+
+function fmtBytes(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+  return (b / 1048576).toFixed(1) + ' MB';
+}
+
+// ============================================================
+//  AI ENHANCEMENT — CONFIG
+// ============================================================
+const DEFAULT_API_KEY = '***REMOVED***';
+
+// ============================================================
+//  PIXEL ART SPRITE LIBRARY
+//  Grid values: 0=transparent, 1=primary, 2=dark, 3=highlight, 4=accent
+// ============================================================
+const SPRITE_GRIDS = {
+  lock: [
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,1,1,0,0,0,1,1,0,0,0],
+    [0,0,1,0,0,0,0,0,1,0,0,0],
+    [0,0,1,0,0,0,0,0,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,1,3,1,1,1,1,1,2,1,0,0],
+    [0,1,1,1,1,4,1,1,1,1,0,0],
+    [0,1,1,1,4,4,4,1,1,1,0,0],
+    [0,1,1,1,1,4,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+  ],
+  key: [
+    [0,0,1,1,1,0,0,0,0,0,0,0],
+    [0,1,1,2,1,1,0,0,0,0,0,0],
+    [1,1,2,3,2,1,1,0,0,0,0,0],
+    [1,1,2,3,2,1,1,0,0,0,0,0],
+    [0,1,1,2,1,1,0,0,0,0,0,0],
+    [0,0,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,1,0],
+    [0,0,0,0,0,0,0,0,1,1,0,0],
+    [0,0,0,0,0,0,0,0,1,1,0,0],
+    [0,0,0,0,0,0,1,1,0,0,0,0],
+    [0,0,0,0,0,0,1,1,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  shield: [
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,1,1,3,1,1,1,2,1,1,0,0],
+    [0,1,1,1,4,4,4,1,1,1,0,0],
+    [0,1,1,1,4,4,4,1,1,1,0,0],
+    [0,0,1,1,4,4,4,1,1,0,0,0],
+    [0,0,1,1,1,4,1,1,1,0,0,0],
+    [0,0,0,1,1,4,1,1,0,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  database: [
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,3,1,1,1,1,2,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,3,1,1,1,1,2,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,3,1,1,1,1,2,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+  ],
+  server: [
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,3,1,1,1,1,1,1,4,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,3,1,1,1,1,1,1,4,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,3,1,1,1,1,1,1,4,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+  ],
+  cloud: [
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,1,1,3,1,1,1,1,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [1,1,3,1,1,1,1,1,2,1,1,0],
+    [1,1,1,1,1,1,1,1,1,1,1,0],
+    [1,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,0,0,1,1,0,0,0],
+    [0,0,0,1,1,0,0,1,1,0,0,0],
+    [0,0,0,1,1,0,0,1,1,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  rocket: [
+    [0,0,0,0,0,1,0,0,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,0,1,3,1,0,0,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,1,3,1,1,0,0,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,1,3,1,1,1,0,0,0],
+    [0,1,1,1,0,1,0,1,1,1,0,0],
+    [0,1,1,0,0,1,0,0,1,1,0,0],
+    [0,0,4,0,4,1,4,0,4,0,0,0],
+    [0,0,4,4,4,0,4,4,4,0,0,0],
+    [0,0,0,4,4,0,4,4,0,0,0,0],
+  ],
+  lightning: [
+    [0,0,0,0,1,1,1,1,0,0,0,0],
+    [0,0,0,1,1,1,1,0,0,0,0,0],
+    [0,0,1,1,1,3,0,0,0,0,0,0],
+    [0,0,1,1,1,0,0,0,0,0,0,0],
+    [0,1,1,1,1,1,1,0,0,0,0,0],
+    [0,1,1,3,1,1,1,1,0,0,0,0],
+    [0,0,0,1,1,1,1,1,1,0,0,0],
+    [0,0,0,0,1,1,1,1,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,0,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  fire: [
+    [0,0,0,0,0,3,0,0,0,0,0,0],
+    [0,0,0,0,3,3,0,3,0,0,0,0],
+    [0,0,0,3,3,3,3,3,0,0,0,0],
+    [0,0,3,3,1,3,1,3,3,0,0,0],
+    [0,0,1,1,1,3,1,1,1,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,1,4,1,1,1,1,1,4,1,0,0],
+    [0,1,1,4,1,1,1,4,1,1,0,0],
+    [0,1,1,1,4,4,4,1,1,1,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+  ],
+  gear: [
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,2,2,2,1,1,0,0,0],
+    [0,1,1,2,2,3,2,2,1,1,0,0],
+    [0,1,2,2,3,3,3,2,2,1,0,0],
+    [0,1,2,2,3,3,3,2,2,1,0,0],
+    [0,1,2,2,3,3,3,2,2,1,0,0],
+    [0,1,1,2,2,3,2,2,1,1,0,0],
+    [0,0,1,1,2,2,2,1,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  wrench: [
+    [0,0,1,1,1,0,0,0,1,1,0,0],
+    [0,1,1,2,1,1,0,1,1,2,1,0],
+    [0,1,2,1,1,1,1,1,2,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,0,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,0,0],
+    [0,0,0,1,1,0,0,0,0,0,0,0],
+    [0,0,1,1,1,0,0,0,0,0,0,0],
+    [0,1,1,3,1,1,0,0,0,0,0,0],
+    [0,1,3,1,1,1,0,0,0,0,0,0],
+    [0,0,1,1,1,0,0,0,0,0,0,0],
+  ],
+  hammer: [
+    [0,0,1,1,1,1,1,0,0,0,0,0],
+    [0,1,1,2,1,1,1,1,0,0,0,0],
+    [0,1,2,1,1,1,1,1,0,0,0,0],
+    [0,1,2,3,1,1,1,1,0,0,0,0],
+    [0,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,1,1,1,1,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  brain: [
+    [0,0,1,1,1,1,1,1,0,0,0,0],
+    [0,1,1,3,1,1,3,1,1,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,0,0],
+    [1,3,1,2,1,1,2,1,3,1,0,0],
+    [1,1,1,2,1,1,2,1,1,1,0,0],
+    [1,1,1,1,1,1,1,1,1,1,0,0],
+    [1,1,1,2,1,1,2,1,1,1,0,0],
+    [1,3,1,2,1,1,2,1,3,1,0,0],
+    [1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,0,0,0],
+    [0,0,0,1,1,1,1,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  eye: [
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,2,2,2,1,1,1,1,0],
+    [1,1,1,2,2,4,2,2,1,1,1,1],
+    [0,1,1,1,2,2,2,1,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  robot: [
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,3,1,1,1,3,1,0,0,0],
+    [0,0,1,3,1,1,1,3,1,0,0,0],
+    [0,0,1,1,4,4,4,1,1,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,3,1,1,1,3,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,0,1,1,1,0,1,1,0,0],
+    [0,0,1,0,0,0,0,0,1,0,0,0],
+    [0,0,1,1,0,0,0,1,1,0,0,0],
+  ],
+  heart: [
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,1,1,0,0,0,1,1,0,0,0],
+    [0,1,1,1,1,0,1,1,1,1,0,0],
+    [1,1,3,1,1,1,1,1,3,1,1,0],
+    [1,1,1,1,1,1,1,1,1,1,1,0],
+    [1,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,0,0],
+  ],
+  star: [
+    [0,0,0,0,0,1,0,0,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,0,1,3,1,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,1,3,1,1,1,1,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,1,1,0,1,1,1,0,1,1,0,0],
+    [0,1,0,0,0,1,0,0,0,1,0,0],
+    [1,0,0,0,0,1,0,0,0,0,1,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  diamond: [
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,1,3,3,1,1,0,0,0,0],
+    [0,0,1,3,3,1,1,1,1,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  chat_bubble: [
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,0],
+    [1,1,3,1,1,1,1,1,1,2,1,0],
+    [1,1,1,1,1,1,1,1,1,1,1,0],
+    [1,4,1,1,4,1,1,4,1,1,4,0],
+    [1,4,1,1,4,1,1,4,1,1,4,0],
+    [1,1,1,1,1,1,1,1,1,1,1,0],
+    [1,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,0,0,0,0,0,0,0],
+    [0,0,1,1,0,0,0,0,0,0,0,0],
+    [0,1,1,0,0,0,0,0,0,0,0,0],
+  ],
+  envelope: [
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,3,1,1,1,1,1,1,2,1,0],
+    [0,1,1,4,1,1,1,1,4,1,1,0],
+    [0,1,1,1,4,1,1,4,1,1,1,0],
+    [0,1,1,1,1,4,4,1,1,1,1,0],
+    [0,1,1,1,1,4,4,1,1,1,1,0],
+    [0,1,1,1,4,1,1,4,1,1,1,0],
+    [0,1,1,4,1,1,1,1,4,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  bell: [
+    [0,0,0,0,0,1,0,0,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,1,1,1,3,1,1,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,0,0,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  tree: [
+    [0,0,0,0,0,1,0,0,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,1,1,3,1,1,0,0,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,3,1,1,1,3,1,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,1,3,1,3,1,1,1,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,0,0,0,2,0,0,0,0,0,0],
+    [0,0,0,0,0,2,0,0,0,0,0,0],
+    [0,0,0,0,2,2,2,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  leaf: [
+    [0,0,0,0,0,0,0,1,0,0,0,0],
+    [0,0,0,0,0,1,1,1,1,0,0,0],
+    [0,0,0,0,1,1,3,1,1,1,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,3,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,0,0,0],
+    [0,1,1,3,1,1,1,1,0,0,0,0],
+    [1,1,1,1,1,1,1,0,0,0,0,0],
+    [0,1,1,1,1,1,0,0,0,0,0,0],
+    [0,0,0,2,1,0,0,0,0,0,0,0],
+    [0,0,0,0,2,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  flower: [
+    [0,0,0,0,1,0,1,0,0,0,0,0],
+    [0,0,0,1,1,0,1,1,0,0,0,0],
+    [0,0,0,0,0,3,0,0,0,0,0,0],
+    [0,1,1,0,3,3,3,0,1,1,0,0],
+    [0,1,1,3,3,4,3,3,1,1,0,0],
+    [0,0,0,3,4,4,4,3,0,0,0,0],
+    [0,1,1,3,3,4,3,3,1,1,0,0],
+    [0,1,1,0,3,3,3,0,1,1,0,0],
+    [0,0,0,0,0,3,0,0,0,0,0,0],
+    [0,0,0,0,0,2,0,0,0,0,0,0],
+    [0,0,0,0,0,2,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  coin: [
+    [0,0,0,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,3,3,3,1,1,1,0,0],
+    [0,1,1,3,1,1,1,3,1,1,1,0],
+    [0,1,3,1,1,4,1,1,3,1,1,0],
+    [0,1,3,1,4,4,4,1,3,1,1,0],
+    [0,1,3,1,4,4,4,1,3,1,1,0],
+    [0,1,3,1,4,4,4,1,3,1,1,0],
+    [0,1,3,1,1,4,1,1,3,1,1,0],
+    [0,1,1,3,1,1,1,3,1,1,1,0],
+    [0,0,1,1,3,3,3,1,1,1,0,0],
+    [0,0,0,1,1,1,1,1,1,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  wallet: [
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,3,1,1,1,1,1,1,2,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,0,0,0,0,1,1,1,0],
+    [0,1,1,1,0,4,4,0,1,1,1,0],
+    [0,1,1,1,0,4,4,0,1,1,1,0],
+    [0,1,1,1,0,0,0,0,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+  ],
+  chart: [
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,0,0,0,0,0,0,0,0,0,0,0],
+    [1,0,0,0,0,0,0,0,1,0,0,0],
+    [1,0,0,0,0,0,0,0,1,0,0,0],
+    [1,0,0,0,0,0,1,1,1,0,0,0],
+    [1,0,0,0,0,0,1,1,1,1,0,0],
+    [1,0,0,0,1,1,1,1,1,1,0,0],
+    [1,0,0,1,1,1,1,1,1,1,1,0],
+    [1,0,1,1,1,1,1,1,1,1,1,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  globe: [
+    [0,0,0,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,4,4,4,1,1,1,0,0],
+    [0,1,1,4,1,1,1,4,1,1,1,0],
+    [0,1,4,1,1,1,1,1,4,1,1,0],
+    [0,1,1,1,1,3,1,1,1,1,1,0],
+    [1,1,1,1,3,3,3,1,1,1,1,1],
+    [0,1,1,1,1,3,1,1,1,1,1,0],
+    [0,1,4,1,1,1,1,1,4,1,1,0],
+    [0,1,1,4,1,1,1,4,1,1,1,0],
+    [0,0,1,1,4,4,4,1,1,1,0,0],
+    [0,0,0,1,1,1,1,1,1,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  compass: [
+    [0,0,0,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,1,4,4,1,1,1,1,1,0],
+    [0,1,1,4,4,3,1,1,1,1,1,0],
+    [0,1,4,4,1,3,1,1,1,1,1,0],
+    [0,1,4,1,1,3,1,1,1,1,1,0],
+    [0,1,1,1,1,3,4,4,1,1,1,0],
+    [0,1,1,1,1,3,1,4,4,1,1,0],
+    [0,1,1,1,1,4,4,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,1,1,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  pin: [
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,1,1,3,1,1,1,1,0,0,0],
+    [0,1,1,3,1,1,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  book: [
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,3,1,1,1,1,1,1,1,0],
+    [0,1,2,1,1,1,1,1,1,1,1,0],
+    [0,1,2,1,1,4,4,4,1,1,1,0],
+    [0,1,2,1,1,1,1,1,1,1,1,0],
+    [0,1,2,1,1,4,4,4,1,1,1,0],
+    [0,1,2,1,1,1,1,1,1,1,1,0],
+    [0,1,2,1,1,4,4,4,1,1,1,0],
+    [0,1,2,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  scroll: [
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,3,1,1,1,1,1,1,2,1,0],
+    [0,1,1,1,4,4,4,4,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,4,4,4,4,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,4,4,4,4,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,1,1,0,0,0],
+  ],
+  pen: [
+    [0,0,0,0,0,0,0,0,1,1,0,0],
+    [0,0,0,0,0,0,0,1,3,1,0,0],
+    [0,0,0,0,0,0,1,1,1,0,0,0],
+    [0,0,0,0,0,1,1,4,0,0,0,0],
+    [0,0,0,0,1,1,4,0,0,0,0,0],
+    [0,0,0,1,1,4,0,0,0,0,0,0],
+    [0,0,1,1,4,0,0,0,0,0,0,0],
+    [0,1,1,4,0,0,0,0,0,0,0,0],
+    [1,1,4,0,0,0,0,0,0,0,0,0],
+    [1,4,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  music_note: [
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,3,1,1,1,0,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,1,0,0,0,0,0,0,0],
+    [0,0,0,1,1,0,0,0,0,0,0,0],
+    [0,0,0,1,1,0,0,0,0,0,0,0],
+    [0,0,0,1,1,0,0,0,0,0,0,0],
+    [0,0,1,1,1,0,0,0,0,0,0,0],
+    [0,1,1,1,1,1,0,0,0,0,0,0],
+    [0,1,1,1,1,1,0,0,0,0,0,0],
+    [0,0,1,1,1,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  speaker: [
+    [0,0,0,0,0,1,0,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,0,0],
+    [0,0,0,1,1,1,0,0,0,0,0,0],
+    [0,1,1,1,1,1,0,4,0,0,0,0],
+    [1,1,3,1,1,1,0,0,4,0,0,0],
+    [1,1,1,1,1,1,0,0,0,4,0,0],
+    [1,1,3,1,1,1,0,0,4,0,0,0],
+    [0,1,1,1,1,1,0,4,0,0,0,0],
+    [0,0,0,1,1,1,0,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  wave: [
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,1,0,0,0,0,0,1,0,0],
+    [0,0,1,1,1,0,0,0,1,1,1,0],
+    [0,1,1,1,1,1,0,1,1,1,1,1],
+    [0,1,3,1,1,1,1,1,1,1,3,1],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,0,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  camera: [
+    [0,0,0,1,1,0,0,0,0,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,3,1,1,1,1,1,1,2,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,0,1,1,0,1,1,1,0],
+    [0,1,1,1,4,4,4,4,1,1,1,0],
+    [0,1,1,4,4,3,4,4,4,1,1,0],
+    [0,1,1,1,4,4,4,4,1,1,1,0],
+    [0,1,1,1,0,1,1,0,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  image: [
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,1,3,1,1,1,1,1,1,2,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,4,4,1,1,1,1,1,0,0],
+    [0,1,4,4,4,4,1,1,1,1,0,0],
+    [0,1,4,4,4,4,1,4,1,1,0,0],
+    [0,1,1,4,4,1,4,4,4,1,0,0],
+    [0,1,1,1,1,4,4,4,1,1,0,0],
+    [0,1,1,1,1,1,4,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  palette: [
+    [0,0,1,1,1,1,1,1,0,0,0,0],
+    [0,1,1,1,1,1,1,1,1,0,0,0],
+    [0,1,1,1,4,1,1,1,1,0,0,0],
+    [1,1,4,1,1,1,4,1,1,1,0,0],
+    [1,1,1,1,1,1,1,1,1,3,0,0],
+    [1,1,1,1,1,1,1,1,1,3,0,0],
+    [1,1,4,1,1,1,4,1,1,3,0,0],
+    [0,1,1,1,4,1,1,1,1,0,0,0],
+    [0,1,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,1,2,1,1,0,0,0,0],
+    [0,0,0,1,1,2,2,0,0,0,0,0],
+    [0,0,0,0,1,2,0,0,0,0,0,0],
+  ],
+  bug: [
+    [0,0,1,0,0,0,0,0,1,0,0,0],
+    [0,1,1,0,0,0,0,0,1,1,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,1,1,3,1,3,1,1,0,0,0],
+    [1,0,1,1,1,1,1,1,1,0,1,0],
+    [1,0,1,1,4,4,4,1,1,0,1,0],
+    [1,0,1,1,1,1,1,1,1,0,1,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,1,0,1,1,1,0,1,0,0,0],
+    [0,0,1,0,0,0,0,0,1,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  magnifier: [
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,1,1,1,3,1,1,1,1,1,0,0],
+    [0,1,1,3,1,1,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,0,0,0,0,0],
+    [0,0,0,0,0,0,1,1,0,0,0,0],
+    [0,0,0,0,0,0,0,1,1,0,0,0],
+    [0,0,0,0,0,0,0,0,1,0,0,0],
+  ],
+  checkmark: [
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,3,1,1,1,1,1,1,2,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,4,1,1,1,0],
+    [0,1,1,1,1,1,4,4,1,1,1,0],
+    [0,1,4,1,1,4,4,1,1,1,1,0],
+    [0,1,1,4,4,4,1,1,1,1,1,0],
+    [0,1,1,1,4,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+  ],
+  chain: [
+    [0,0,1,1,1,0,0,0,0,0,0,0],
+    [0,1,1,2,1,1,0,0,0,0,0,0],
+    [0,1,2,1,1,1,0,0,0,0,0,0],
+    [0,1,1,1,1,1,0,0,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,2,1,1],
+    [0,0,0,0,1,1,1,2,1,1,1,1],
+    [0,0,0,0,0,1,1,1,1,1,1,0],
+    [0,0,0,0,0,1,1,1,1,1,0,0],
+    [0,0,0,0,1,1,1,1,2,1,0,0],
+    [0,0,0,1,1,1,2,1,1,1,1,0],
+    [0,0,1,1,2,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,1,1,0,0],
+  ],
+  block: [
+    [0,0,0,0,0,1,1,1,1,0,0,0],
+    [0,0,0,0,1,1,3,1,1,1,0,0],
+    [0,0,0,1,1,3,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,3,1,1,1,1,1,1,2,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,1,1,1,1,0],
+    [0,1,2,1,1,1,1,1,1,2,1,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+};
+
+// Build SPRITES rendering functions from grids
+function drawPixelSprite(ctx, grid, x, y, px, colors) {
+  const rows = grid.length;
+  const cols = grid[0].length;
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const v = grid[row][col];
+      if (v === 0) continue;
+      const c = colors[v - 1];
+      if (!c) continue;
+      ctx.fillStyle = c;
+      ctx.fillRect(
+        Math.floor(x) + col * px,
+        Math.floor(y) + row * px,
+        px, px
+      );
+    }
+  }
+}
+
+const SPRITES = {};
+(function buildSprites() {
+  for (const [name, grid] of Object.entries(SPRITE_GRIDS)) {
+    SPRITES[name] = function(ctx, cx, cy, size, colors) {
+      const px = Math.max(1, Math.floor(size / 12));
+      const x = Math.floor(cx - 6 * px);
+      const y = Math.floor(cy - 6 * px);
+      drawPixelSprite(ctx, grid, x, y, px, colors);
+    };
+  }
+})();
+
+// Extract 4 sprite colors from theme: [primary, dark, highlight, accent]
+function getThemeSpriteColors(theme) {
+  const primary = theme.infoAccent || '#4a8eff';
+  const dark = (theme.infoBg || '#050810').replace('#', '');
+  const pal = theme.pal || [];
+  const accent = pal[6] || pal[5] || primary;
+  // Lighten primary slightly for highlight
+  return [primary, '#1a1a2e', '#ffffff', accent];
+}
+
+// ============================================================
+//  SPRITE FUZZY MATCHER
+// ============================================================
+function matchSprite(text) {
+  if (!text) return null;
+  text = text.toLowerCase();
+  const mapping = {
+    'lock':       ['lock', 'auth', 'security', 'encrypt', 'password', 'protected'],
+    'key':        ['key', 'api', 'token', 'secret', 'credential'],
+    'shield':     ['shield', 'firewall', 'guard', 'defense', 'protect', 'safe'],
+    'database':   ['database', 'db', 'sql', 'storage', 'data store', 'mongo', 'postgres', 'redis'],
+    'server':     ['server', 'backend', 'host', 'node', 'service', 'rack'],
+    'cloud':      ['cloud', 'aws', 'azure', 'gcp', 'deploy', 'saas', 'infrastructure'],
+    'rocket':     ['rocket', 'fast', 'launch', 'deploy', 'startup', 'speed', 'performance'],
+    'lightning':  ['lightning', 'quick', 'realtime', 'instant', 'flash', 'electric', 'bolt'],
+    'fire':       ['fire', 'hot', 'blazing', 'powerful', 'intense', 'flame'],
+    'gear':       ['gear', 'engine', 'system', 'mechanism', 'config', 'settings', 'cog'],
+    'wrench':     ['wrench', 'tool', 'utility', 'fix', 'construct', 'build'],
+    'hammer':     ['hammer', 'forge', 'craft', 'build', 'smash', 'make'],
+    'brain':      ['brain', 'neural', 'ai', 'intelligence', 'ml', 'think', 'cognitive', 'mind'],
+    'robot':      ['robot', 'bot', 'agent', 'automat', 'machine', 'android'],
+    'eye':        ['eye', 'vision', 'watch', 'monitor', 'observe', 'detect', 'see'],
+    'heart':      ['heart', 'love', 'core', 'vital', 'health', 'wellness'],
+    'star':       ['star', 'rating', 'favorite', 'popular', 'feature', 'award'],
+    'diamond':    ['diamond', 'gem', 'premium', 'crystal', 'jewel'],
+    'chat_bubble':['chat', 'message', 'conversation', 'bubble', 'comment', 'discuss', 'talk'],
+    'envelope':   ['email', 'mail', 'envelope', 'inbox', 'send', 'notify', 'notification'],
+    'bell':       ['bell', 'alert', 'ring', 'alarm', 'reminder', 'ping'],
+    'tree':       ['tree', 'hierarchy', 'branch', 'forest', 'grow', 'root', 'verdant'],
+    'leaf':       ['leaf', 'organic', 'green', 'nature', 'eco', 'plant', 'environment'],
+    'flower':     ['flower', 'bloom', 'blossom', 'garden', 'petal'],
+    'coin':       ['coin', 'money', 'payment', 'financial', 'currency', 'price', 'token'],
+    'wallet':     ['wallet', 'fund', 'balance', 'account', 'crypto', 'defi'],
+    'chart':      ['chart', 'graph', 'analytics', 'dashboard', 'metric', 'stats', 'data'],
+    'globe':      ['globe', 'world', 'web', 'internet', 'global', 'international', 'network'],
+    'compass':    ['compass', 'navigate', 'route', 'direction', 'map', 'path', 'guide'],
+    'pin':        ['pin', 'location', 'marker', 'place', 'address'],
+    'book':       ['book', 'document', 'docs', 'readme', 'guide', 'manual', 'wiki', 'library'],
+    'scroll':     ['scroll', 'log', 'history', 'journal', 'record', 'parchment'],
+    'pen':        ['pen', 'write', 'edit', 'author', 'content', 'text', 'notes'],
+    'music_note': ['music', 'audio', 'sound', 'song', 'melody', 'beat', 'tone'],
+    'speaker':    ['speaker', 'voice', 'broadcast', 'volume', 'output'],
+    'wave':       ['wave', 'signal', 'frequency', 'stream', 'pulse'],
+    'camera':     ['camera', 'photo', 'image', 'picture', 'screenshot', 'capture', 'record'],
+    'image':      ['gallery', 'thumbnail', 'canvas', 'visual', 'render', 'pixel'],
+    'palette':    ['palette', 'color', 'design', 'art', 'style', 'theme', 'ui', 'ux'],
+    'bug':        ['bug', 'debug', 'error', 'issue', 'fix', 'patch', 'issue'],
+    'magnifier':  ['magnif', 'search', 'find', 'scan', 'inspect', 'analyze', 'lens'],
+    'checkmark':  ['check', 'test', 'verify', 'pass', 'valid', 'approve', 'ci', 'ok', 'done'],
+    'chain':      ['chain', 'blockchain', 'link', 'connect', 'bond', 'ledger'],
+    'block':      ['block', 'cube', 'container', 'docker', 'module', 'package', 'box'],
+  };
+
+  for (const [sprite, keywords] of Object.entries(mapping)) {
+    if (keywords.some(kw => text.includes(kw))) return sprite;
+  }
+  return null;
+}
+
+// ============================================================
+//  PALETTE SHIFT OVERLAY
+// ============================================================
+function applyPaletteShift(ctx, shift) {
+  const overlays = {
+    warm:   'rgba(255, 100, 0, 0.06)',
+    cool:   'rgba(0, 100, 255, 0.06)',
+    neon:   'rgba(0, 255, 200, 0.05)',
+    earth:  'rgba(100, 60, 0, 0.07)',
+    pastel: 'rgba(200, 200, 255, 0.05)',
+    dark:   'rgba(0, 0, 0, 0.10)',
+  };
+  const overlay = overlays[shift];
+  if (!overlay) return;
+  ctx.fillStyle = overlay;
+  ctx.fillRect(0, 0, CS, TH);
+}
+
+// ============================================================
+//  PARTICLE SYSTEM
+// ============================================================
+function addParticles(ctx, rng, theme, themeKey, multiplier) {
+  const count = Math.floor(50 * multiplier);
+  const palettes = {
+    neon:      ['#00fff9', '#ff2d95', '#4a8eff', '#ffe900', '#ff88cc'],
+    jungle:    ['#5cb865', '#86d48a', '#4a8a50', '#ffd700', '#aaffaa'],
+    forge:     ['#ffa040', '#ffe850', '#ffffa8', '#f07030', '#ff6600'],
+    circuit:   ['#00ff66', '#00cc44', '#ccffcc', '#00aa36', '#80ffaa'],
+    dungeon:   ['#ffd700', '#c8a800', '#ffffa8', '#9f50ff', '#ff8844'],
+    ruins:     ['#c4a060', '#e0c080', '#ddb870', '#886622', '#ffe0a0'],
+    crystal:   ['#ff50c0', '#b030d0', '#ffe8f8', '#8844ff', '#ff88ff'],
+    corporate: ['#886622', '#ccaa66', '#ffffcc', '#888888', '#aaaacc'],
+    pipes:     ['#00ff44', '#80ffa8', '#00cc30', '#003310', '#44ff88'],
+    patchwork: ['#ff50c0', '#00fff9', '#ffd700', '#5cb865', '#ff8800'],
+  };
+
+  const colors = palettes[themeKey] || palettes.neon;
+  const savedAlpha = ctx.globalAlpha;
+
+  for (let i = 0; i < count; i++) {
+    const x = rng() * CS;
+    const y = rng() * TH;
+    const size = 2 + Math.floor(rng() * 4);
+    const color = colors[Math.floor(rng() * colors.length)];
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.25 + rng() * 0.45;
+
+    // Theme-specific particle shapes
+    if (themeKey === 'circuit') {
+      // Square data bits
+      ctx.fillRect(x, y, size, size);
+    } else if (themeKey === 'forge') {
+      // Spark: tiny diagonal
+      ctx.fillRect(x, y, 1, size);
+      ctx.fillRect(x + 1, y + 1, 1, size - 1);
+    } else {
+      // Standard dot
+      ctx.fillRect(x, y, size, size);
+    }
+  }
+  ctx.globalAlpha = savedAlpha;
+}
+
+// ============================================================
+//  AI OVERLAY RENDERER
+// ============================================================
+function renderAIOverlay(ctx, aiData, masterSeed, theme, themeKey) {
+  if (!aiData) return;
+  const rng = mkRng((masterSeed ^ 0xA1DA7A) >>> 0);
+  const spriteColors = getThemeSpriteColors(theme);
+
+  // --- Hero sprite (large, semi-transparent, center-ish) ---
+  const heroName = matchSprite(aiData.hero || '');
+  if (heroName && SPRITES[heroName]) {
+    const heroSize = 120 + Math.floor(rng() * 80);
+    const hx = 380 + Math.floor(rng() * 240);
+    const hy = 280 + Math.floor(rng() * 200);
+    ctx.globalAlpha = 0.65;
+    SPRITES[heroName](ctx, hx, hy, heroSize, spriteColors);
+    ctx.globalAlpha = 1.0;
+  }
+
+  // --- Element sprites (smaller, scattered) ---
+  const placedPositions = [];
+  (aiData.elements || []).slice(0, 5).forEach((elem) => {
+    const spriteName = matchSprite(elem);
+    if (!spriteName || !SPRITES[spriteName]) return;
+
+    const spriteSize = 50 + Math.floor(rng() * 38);
+    let sx, sy, attempts = 0;
+    do {
+      sx = 60 + Math.floor(rng() * (CS - 120));
+      sy = 60 + Math.floor(rng() * (TH - 120));
+      attempts++;
+    } while (attempts < 25 && placedPositions.some(p =>
+      Math.abs(p.x - sx) < 110 && Math.abs(p.y - sy) < 110
+    ));
+    placedPositions.push({ x: sx, y: sy });
+
+    ctx.globalAlpha = 0.50 + rng() * 0.28;
+    SPRITES[spriteName](ctx, sx, sy, spriteSize, spriteColors);
+    ctx.globalAlpha = 1.0;
+  });
+
+  // --- Palette shift ---
+  if (aiData.palette_shift) {
+    applyPaletteShift(ctx, aiData.palette_shift);
+  }
+
+  // --- Particles ---
+  const densityMultiplier =
+    aiData.density === 'dense' ? 2.2 :
+    aiData.density === 'sparse' ? 0.3 : 1.0;
+  addParticles(ctx, rng, theme, themeKey, densityMultiplier);
+}
+
+// ============================================================
+//  AI API CALL — Claude Haiku
+// ============================================================
+async function getAIComposition(repoData) {
+  const key = localStorage.getItem('codeteeth-api-key') || DEFAULT_API_KEY;
+  if (!key) return null;
+
+  const langEntries = Object.entries(repoData.languages || {}).sort((a, b) => b[1] - a[1]);
+  const topLangs = langEntries.slice(0, 5).map(([l]) => l).join(', ');
+  const topDirs = [...new Set(repoData.files.slice(0, 100).map(f => f.path.split('/')[0]))].slice(0, 10);
+  const topFiles = repoData.files.slice(0, 20).map(f => f.path);
+
+  const prompt = `You analyze code repositories and describe them visually for pixel art generation.
+
+Repo: ${repoData.repoName}
+Description: ${repoData.description || 'none'}
+Languages: ${topLangs}
+Top directories: ${topDirs.join(', ')}
+Key files: ${topFiles.join(', ')}
+
+Return ONLY valid JSON (no markdown, no explanation):
+{
+  "hero": "main visual concept in 3-5 words",
+  "elements": ["sprite1", "sprite2", "sprite3", "sprite4", "sprite5"],
+  "palette_shift": "warm|cool|neon|earth|pastel|dark",
+  "density": "sparse|medium|dense",
+  "vibe": "one sentence describing the visual mood"
+}
+
+"hero" should be a concrete visual concept (e.g. "towering neural network", "interconnected chat bubbles", "blockchain vault fortress").
+"elements" should be 5 concrete pixel art sprites that represent what this code does (e.g. "lock", "database", "rocket", "gear", "lightning bolt").
+Be creative and specific to THIS repo.`;
+
+  try {
+    setLoadingText('AI analyzing repo...');
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5',
+        max_tokens: 300,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
+
+    if (!res.ok) {
+      console.warn('AI enhancement failed (status', res.status, '), falling back to standard render');
+      return null;
+    }
+
+    const data = await res.json();
+    const text = data.content?.[0]?.text || '';
+    // Strip any markdown code fences just in case
+    const clean = text.replace(/```[a-z]*\n?/g, '').replace(/```/g, '').trim();
+    return JSON.parse(clean);
+  } catch (e) {
+    console.warn('AI composition error, falling back:', e);
+    return null;
+  }
+}
+
+// ============================================================
+//  SCANLINES
+// ============================================================
+function drawScanlines(ctx) {
+  for (let y = 0; y < TH; y += 2) {
+    ctx.fillStyle = 'rgba(0,0,0,0.07)';
+    ctx.fillRect(0, y, CS, 1);
+  }
+}
+
+// ============================================================
+//  MAIN CANVAS GENERATOR
+// ============================================================
+function generateCanvas(canvas, repoData, aiData) {
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+
+  const { repoName, languages, files } = repoData;
+  const themeKey = getThemeKey(languages);
+  const theme = THEMES[themeKey];
+
+  const masterSeed = hashStr(repoName);
+
+  // Background
+  ctx.fillStyle = theme.bg;
+  ctx.fillRect(0, 0, CS, TH);
+
+  // Build layout
+  const layout = buildLayout(files.length ? files : [{ path: 'empty.txt', size: 1000 }]);
+
+  // Render blocks
+  layout.forEach((item, idx) => {
+    if (item.rect.w < 2 || item.rect.h < 2) return;
+    const seed = (masterSeed ^ (idx * 2654435761 + 1013904223)) >>> 0;
+    const rng = mkRng(seed);
+    theme.render(ctx, item.rect, rng, item);
+  });
+
+  // AI overlay (after treemap, before scanlines)
+  if (aiData) {
+    renderAIOverlay(ctx, aiData, masterSeed, theme, themeKey);
+  }
+
+  // Overlays
+  drawScanlines(ctx);
+  drawInfoBar(ctx, repoData, theme, layout.length, !!aiData);
+
+  return { themeKey, themeName: theme.name, blockCount: layout.length };
+}
+
+// ============================================================
+//  API FETCHERS
+// ============================================================
+function parseUrl(url) {
+  url = url.trim();
+  const gh = url.match(/github\.com\/([^/\s]+)\/([^/\s?#]+)/);
+  if (gh) return { platform: 'github', owner: gh[1], repo: gh[2].replace(/\.git$/, '') };
+
+  const gl = url.match(/gitlab\.com\/((?:[^/\s]+\/)+[^/\s?#]+?)(?:\.git)?(?:[/\s?#]|$)/);
+  if (gl) return { platform: 'gitlab', path: gl[1].replace(/\/$/, '') };
+
+  return null;
+}
+
+function setLoadingText(t) {
+  const el = document.getElementById('loading-text');
+  if (el) el.textContent = t;
+}
+
+async function fetchGitHub(owner, repo) {
+  setLoadingText('Fetching repo info...');
+  const infoRes = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+  if (!infoRes.ok) {
+    if (infoRes.status === 403) throw new Error('GitHub rate limit reached. Try again in ~1 hour, or add a token.');
+    if (infoRes.status === 404) throw new Error('Repo not found. Is it public?');
+    throw new Error(`GitHub API error ${infoRes.status}`);
+  }
+  const info = await infoRes.json();
+
+  setLoadingText('Fetching language breakdown...');
+  const langRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/languages`);
+  const languages = langRes.ok ? await langRes.json() : {};
+
+  setLoadingText('Fetching file tree...');
+  const branch = info.default_branch || 'main';
+  const treeRes = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`
+  );
+  if (!treeRes.ok) throw new Error(`Could not fetch tree: ${treeRes.status}`);
+  const treeData = await treeRes.json();
+
+  if (treeData.message?.includes('rate limit')) throw new Error('GitHub rate limit reached.');
+
+  const files = (treeData.tree || [])
+    .filter(f => f.type === 'blob')
+    .map(f => {
+      const fname = f.path.split('/').pop();
+      const ext = fname.includes('.') ? fname.split('.').pop().toLowerCase() : '';
+      return { path: f.path, size: f.size || 100, ext };
+    });
+
+  setLoadingText('Rendering...');
+
+  return {
+    repoName: `${owner}/${repo}`,
+    description: info.description || '',
+    stars: info.stargazers_count || 0,
+    languages,
+    files,
+    truncated: !!treeData.truncated,
+  };
+}
+
+async function fetchGitLab(projectPath) {
+  setLoadingText('Fetching GitLab repo...');
+  const encoded = encodeURIComponent(projectPath);
+
+  const infoRes = await fetch(`https://gitlab.com/api/v4/projects/${encoded}`);
+  if (!infoRes.ok) {
+    if (infoRes.status === 404) throw new Error('GitLab repo not found. Is it public?');
+    throw new Error(`GitLab API error ${infoRes.status}`);
+  }
+  const info = await infoRes.json();
+
+  setLoadingText('Fetching file tree (paginated)...');
+  let files = [], page = 1;
+  while (files.length < 2000) {
+    const r = await fetch(
+      `https://gitlab.com/api/v4/projects/${encoded}/repository/tree?recursive=true&per_page=100&page=${page}`
+    );
+    if (!r.ok) break;
+    const items = await r.json();
+    if (!items.length) break;
+    files.push(...items.filter(f => f.type === 'blob').map(f => ({ path: f.path, size: 1000 })));
+    if (items.length < 100) break;
+    page++;
+  }
+
+  let languages = {};
+  try {
+    const lr = await fetch(`https://gitlab.com/api/v4/projects/${encoded}/languages`);
+    if (lr.ok) {
+      const ld = await lr.json();
+      languages = Object.fromEntries(Object.entries(ld).map(([l, p]) => [l, Math.round(p * 10000)]));
+    }
+  } catch (_) {}
+
+  setLoadingText('Rendering...');
+  return {
+    repoName: projectPath,
+    description: info.description || '',
+    stars: info.star_count || 0,
+    languages,
+    files,
+  };
+}
+
+async function fetchRepoData(url) {
+  const parsed = parseUrl(url);
+  if (!parsed) throw new Error('Invalid URL. Use: https://github.com/owner/repo');
+  if (parsed.platform === 'github') return fetchGitHub(parsed.owner, parsed.repo);
+  if (parsed.platform === 'gitlab') return fetchGitLab(parsed.path);
+  throw new Error('Only GitHub and GitLab are supported.');
+}
+
+// ============================================================
+//  GALLERY PRESETS
+// ============================================================
+function makeSyntheticFiles(seed, dirs) {
+  const rng = mkRng(hashStr(seed));
+  const files = [];
+  const extMap = {
+    '.js': ['.js', '.mjs', '.jsx'], '.ts': ['.ts', '.tsx'],
+    '.py': ['.py', '.pyi'], '.rs': ['.rs'],
+    '.go': ['.go'], '.c': ['.c', '.h'], '.cpp': ['.cpp', '.h', '.hpp'],
+    '.rb': ['.rb'], '.java': ['.java', '.kt'], '.sh': ['.sh', '.bash'],
+  };
+
+  for (const [dir, count, avgSize, extKey] of dirs) {
+    const exts = extMap[extKey] || [extKey];
+    for (let i = 0; i < count; i++) {
+      const ext = exts[Math.floor(rng() * exts.length)];
+      const size = Math.max(100, Math.round(avgSize * (0.25 + rng() * 1.5)));
+      const nameBase = ['index', 'utils', 'core', 'lib', 'main', 'mod', 'impl',
+                        'client', 'server', 'parser', 'types', 'config', 'loader',
+                        'handler', 'manager', 'router', 'store', 'reducer', 'model'][i % 20];
+      files.push({ path: `${dir}/${nameBase}_${i}${ext}`, size });
+    }
+  }
+  return files;
+}
+
+const GALLERY_PRESETS = [
+  {
+    repoName: 'vercel/next.js',
+    description: 'The React Framework — client-side and server-side rendering',
+    stars: 121000,
+    languages: { JavaScript: 5400000, TypeScript: 3200000, CSS: 240000, Shell: 80000 },
+    files: makeSyntheticFiles('vercel/next.js', [
+      ['packages/next/src/server',   28, 38000, '.ts'],
+      ['packages/next/src/client',   22, 28000, '.ts'],
+      ['packages/next/src/build',    18, 22000, '.ts'],
+      ['packages/next/src/lib',      15, 16000, '.ts'],
+      ['packages/next/src/shared',   10, 12000, '.ts'],
+      ['packages/next/src/export',    8, 10000, '.ts'],
+      ['examples/with-redux',        12,  3000, '.js'],
+      ['examples/with-tailwind',      8,  2500, '.js'],
+      ['examples/blog',               6,  2000, '.js'],
+      ['test/e2e',                   20,  5000, '.ts'],
+      ['test/unit',                  14,  3500, '.ts'],
+      ['scripts',                     5,  2000, '.js'],
+      ['packages/font',               6,  8000, '.ts'],
+    ]),
+  },
+  {
+    repoName: 'django/django',
+    description: 'The Web framework for perfectionists with deadlines',
+    stars: 78000,
+    languages: { Python: 7800000, HTML: 300000, JavaScript: 80000 },
+    files: makeSyntheticFiles('django/django', [
+      ['django/db/models',           20, 35000, '.py'],
+      ['django/db/backends',         15, 22000, '.py'],
+      ['django/db/migrations',        8, 12000, '.py'],
+      ['django/http',                14, 18000, '.py'],
+      ['django/core',                22, 25000, '.py'],
+      ['django/contrib/admin',       18, 20000, '.py'],
+      ['django/contrib/auth',        12, 18000, '.py'],
+      ['django/contrib/staticfiles',  8, 10000, '.py'],
+      ['django/template',            16, 15000, '.py'],
+      ['django/forms',               10, 14000, '.py'],
+      ['django/utils',               18, 8000,  '.py'],
+      ['tests/model_fields',         20, 9000,  '.py'],
+      ['tests/migrations',           12, 7000,  '.py'],
+      ['docs',                        5, 5000,  '.py'],
+    ]),
+  },
+  {
+    repoName: 'rust-lang/rust',
+    description: 'Empowering everyone to build reliable and efficient software',
+    stars: 96000,
+    languages: { Rust: 9500000, Python: 400000, Shell: 200000 },
+    files: makeSyntheticFiles('rust-lang/rust', [
+      ['compiler/rustc_ast',         18, 40000, '.rs'],
+      ['compiler/rustc_typeck',      20, 55000, '.rs'],
+      ['compiler/rustc_mir',         22, 48000, '.rs'],
+      ['compiler/rustc_borrowck',    16, 45000, '.rs'],
+      ['compiler/rustc_codegen_ssa', 14, 38000, '.rs'],
+      ['compiler/rustc_resolve',     10, 42000, '.rs'],
+      ['library/std/src',            28, 20000, '.rs'],
+      ['library/core/src',           22, 18000, '.rs'],
+      ['library/alloc/src',          14, 16000, '.rs'],
+      ['src/tools/rustfmt',          10, 12000, '.rs'],
+      ['src/bootstrap',              12, 10000, '.rs'],
+      ['tests/ui',                   35,  3000, '.rs'],
+      ['tests/run-make',             15,  2000, '.rs'],
+    ]),
+  },
+  {
+    repoName: 'torvalds/linux',
+    description: 'Linux kernel source tree',
+    stars: 182000,
+    languages: { C: 18000000, 'C Header': 4000000, Assembly: 800000, Shell: 400000 },
+    files: makeSyntheticFiles('torvalds/linux', [
+      ['drivers/net',                30, 42000, '.c'],
+      ['drivers/gpu',                25, 38000, '.c'],
+      ['drivers/usb',                20, 30000, '.c'],
+      ['arch/x86/kernel',            18, 35000, '.c'],
+      ['arch/x86/mm',                10, 28000, '.c'],
+      ['kernel/sched',               14, 45000, '.c'],
+      ['kernel/locking',             10, 20000, '.c'],
+      ['mm',                         16, 40000, '.c'],
+      ['fs/ext4',                    12, 35000, '.c'],
+      ['fs/btrfs',                   14, 40000, '.c'],
+      ['net/ipv4',                   16, 38000, '.c'],
+      ['net/core',                   10, 32000, '.c'],
+      ['include/linux',              25, 12000, '.c'],
+      ['lib',                        14, 15000, '.c'],
+      ['scripts',                     8,  5000, '.c'],
+    ]),
+  },
+];
+
+// ============================================================
+//  GALLERY INIT
+// ============================================================
+function initGallery() {
+  const grid = document.getElementById('gallery-grid');
+  if (!grid) return;
+
+  // Build loader animation
+  buildLoader();
+
+  GALLERY_PRESETS.forEach((preset, gi) => {
+    const item = document.createElement('div');
+    item.className = 'gallery-item';
+    item.title = `${preset.repoName} — click to load`;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'gallery-canvas-wrap';
+
+    // Placeholder while rendering
+    const placeholder = document.createElement('div');
+    placeholder.className = 'gallery-generating';
+    placeholder.textContent = 'generating…';
+    wrap.appendChild(placeholder);
+
+    const label = document.createElement('div');
+    label.className = 'gallery-label';
+    const themeKey = getThemeKey(preset.languages);
+    const theme = THEMES[themeKey];
+    label.innerHTML = `<strong>${preset.repoName}</strong><span>${preset.description.slice(0,60)}${preset.description.length>60?'…':''}</span>`;
+
+    item.appendChild(wrap);
+    item.appendChild(label);
+    grid.appendChild(item);
+
+    // Click to load in main canvas
+    item.addEventListener('click', () => {
+      document.getElementById('repo-url').value = `https://github.com/${preset.repoName}`;
+      showCanvasSection();
+      document.getElementById('canvas-loading').style.display = 'flex';
+      document.getElementById('canvas-result').style.display = 'none';
+      document.getElementById('canvas-error').style.display = 'none';
+      setLoadingText('Rendering from preset...');
+
+      setTimeout(() => {
+        try {
+          const canvas = document.getElementById('codeteeth-canvas');
+          const info = generateCanvas(canvas, preset);
+          showResult(canvas, preset, info);
+        } catch (e) {
+          showError(e.message);
+        }
+      }, 50);
+    });
+
+    // Render gallery canvas after stagger delay
+    setTimeout(() => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1000;
+      canvas.height = 1000;
+      canvas.className = 'gallery-canvas';
+
+      try {
+        generateCanvas(canvas, preset);
+        wrap.replaceChild(canvas, placeholder);
+      } catch (e) {
+        placeholder.textContent = 'render failed';
+        console.error('Gallery render error:', e);
+      }
+    }, gi * 120 + 100);
+  });
+}
+
+// ============================================================
+//  LOADER ANIMATION BUILD
+// ============================================================
+function buildLoader() {
+  const grid = document.getElementById('loader-grid');
+  if (!grid) return;
+  const colors = ['#4a8eff','#6ab0ff','#00fff9','#ff2d95','#ffe900','#5cb865','#f07030','#c8a800'];
+  for (let i = 0; i < 24; i++) {
+    const px = document.createElement('div');
+    px.className = 'loader-pixel';
+    px.style.background = colors[i % colors.length];
+    px.style.animationDelay = `${(i * 0.05).toFixed(2)}s`;
+    grid.appendChild(px);
+  }
+}
+
+// ============================================================
+//  UI HELPERS
+// ============================================================
+function showCanvasSection() {
+  const sec = document.getElementById('canvas-section');
+  sec.style.display = 'block';
+  sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showResult(canvas, repoData, info, isAIEnhanced) {
+  document.getElementById('canvas-loading').style.display = 'none';
+  document.getElementById('canvas-error').style.display = 'none';
+  document.getElementById('canvas-result').style.display = 'block';
+
+  const stats = document.getElementById('repo-stats');
+  const entries = Object.entries(repoData.languages || {}).sort((a, b) => b[1] - a[1]);
+  const totalLang = entries.reduce((s, [, v]) => s + v, 0);
+  const langList = entries.slice(0, 4).map(([l, v]) => {
+    const pct = totalLang > 0 ? Math.round(v / totalLang * 100) : '?';
+    return `<span><span class="stat-accent">${l}</span> ${pct}%</span>`;
+  }).join('');
+
+  stats.innerHTML = `
+    <span>⭐ <span class="stat-accent">${(repoData.stars || 0).toLocaleString()}</span></span>
+    <span>🎨 <span class="stat-accent">${info.themeName}</span></span>
+    <span>📁 <span class="stat-accent">${info.blockCount}</span> files</span>
+    ${langList}
+    ${isAIEnhanced ? '<span>✨ <span class="stat-accent">AI Enhanced</span></span>' : ''}
+    ${repoData.truncated ? '<span style="color:#ffaa44">⚠ tree truncated (large repo)</span>' : ''}
+  `;
+
+  // Wire download button
+  const dlBtn = document.getElementById('download-btn');
+  dlBtn.onclick = () => {
+    const link = document.createElement('a');
+    link.download = `codeteeth-${(repoData.repoName || 'repo').replace(/[^a-z0-9]/gi, '-')}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
+}
+
+function showError(msg) {
+  document.getElementById('canvas-loading').style.display = 'none';
+  document.getElementById('canvas-result').style.display = 'none';
+  document.getElementById('canvas-error').style.display = 'flex';
+  document.getElementById('error-text').textContent = msg;
+}
+
+// ============================================================
+//  MAIN GENERATE FLOW
+// ============================================================
+async function handleGenerate() {
+  const urlInput = document.getElementById('repo-url');
+  const btn = document.getElementById('generate-btn');
+  const url = urlInput.value.trim();
+
+  if (!url) {
+    urlInput.focus();
+    urlInput.style.borderColor = '#ff4444';
+    setTimeout(() => { urlInput.style.borderColor = ''; }, 1500);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'LOADING...';
+
+  showCanvasSection();
+  document.getElementById('canvas-loading').style.display = 'flex';
+  document.getElementById('canvas-result').style.display = 'none';
+  document.getElementById('canvas-error').style.display = 'none';
+
+  try {
+    const repoData = await fetchRepoData(url);
+
+    // AI Enhancement (if toggle is on and key available)
+    let aiData = null;
+    const aiToggle = document.getElementById('ai-enhanced-toggle');
+    if (aiToggle && aiToggle.checked) {
+      aiData = await getAIComposition(repoData);
+    }
+
+    setLoadingText('Rendering canvas...');
+    const canvas = document.getElementById('codeteeth-canvas');
+    const info = generateCanvas(canvas, repoData, aiData);
+    showResult(canvas, repoData, info, !!aiData);
+  } catch (err) {
+    showError(err.message || 'Unknown error. Check the URL and try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'GENERATE';
+  }
+}
+
+// ============================================================
+//  SETTINGS & AI TOGGLE LOGIC
+// ============================================================
+function initAISettings() {
+  const savedKey = localStorage.getItem('codeteeth-api-key') || DEFAULT_API_KEY;
+  const toggle = document.getElementById('ai-enhanced-toggle');
+  const toggleLabel = toggle?.parentElement;
+  const keyInput = document.getElementById('api-key-input');
+
+  // Pre-fill key input if saved
+  if (keyInput && savedKey) {
+    keyInput.value = savedKey;
+  }
+
+  // Set toggle default: ON if key exists, OFF if not
+  if (toggle) {
+    toggle.checked = !!(savedKey);
+    updateToggleState();
+  }
+
+  // Settings panel toggle
+  const settingsToggleBtn = document.getElementById('settings-toggle');
+  const settingsPanel = document.getElementById('settings-panel');
+  const settingsArrow = document.getElementById('settings-arrow');
+
+  if (settingsToggleBtn && settingsPanel) {
+    settingsToggleBtn.addEventListener('click', () => {
+      const isOpen = settingsPanel.style.display !== 'none';
+      settingsPanel.style.display = isOpen ? 'none' : 'block';
+      if (settingsArrow) {
+        settingsArrow.classList.toggle('open', !isOpen);
+      }
+    });
+  }
+
+  // Save key button
+  const saveBtn = document.getElementById('save-key-btn');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      const val = (document.getElementById('api-key-input')?.value || '').trim();
+      if (val) {
+        localStorage.setItem('codeteeth-api-key', val);
+      } else {
+        localStorage.removeItem('codeteeth-api-key');
+      }
+      const status = document.getElementById('save-status');
+      if (status) {
+        status.textContent = val ? '✓ Key saved' : '✓ Key cleared';
+        setTimeout(() => { status.textContent = ''; }, 2500);
+      }
+      updateToggleState();
+    });
+  }
+
+  // Show/hide key button
+  const showKeyBtn = document.getElementById('show-key-btn');
+  if (showKeyBtn) {
+    showKeyBtn.addEventListener('click', () => {
+      const input = document.getElementById('api-key-input');
+      if (!input) return;
+      input.type = input.type === 'password' ? 'text' : 'password';
+      showKeyBtn.textContent = input.type === 'password' ? '👁' : '🙈';
+    });
+  }
+}
+
+function updateToggleState() {
+  const key = localStorage.getItem('codeteeth-api-key') || DEFAULT_API_KEY;
+  const toggle = document.getElementById('ai-enhanced-toggle');
+  const toggleLabel = document.getElementById('ai-toggle-row')?.querySelector('.ai-toggle-label');
+
+  if (!toggle) return;
+
+  if (!key) {
+    toggle.disabled = true;
+    toggle.checked = false;
+    if (toggleLabel) {
+      toggleLabel.classList.add('disabled');
+      toggleLabel.title = 'Add API key in Settings to enable AI enhancement';
+    }
+  } else {
+    toggle.disabled = false;
+    if (toggleLabel) {
+      toggleLabel.classList.remove('disabled');
+      toggleLabel.title = '';
+    }
+  }
+}
+
+// ============================================================
+//  EVENT LISTENERS
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  buildLoader();
+  initGallery();
+  initAISettings();
+
+  document.getElementById('generate-btn').addEventListener('click', handleGenerate);
+
+  document.getElementById('repo-url').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleGenerate();
+  });
+
+  document.getElementById('retry-btn')?.addEventListener('click', () => {
+    document.getElementById('canvas-section').style.display = 'none';
+  });
+});
+</script>
+</body>
+</html>
