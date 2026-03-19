@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DARKSOL Terminal — The Autonomous Agent's Command Center</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌑</text></svg>">
+
+  <meta name="description" content="DARKSOL Terminal — Unified CLI platform for trading, bridging, wallets, casino, oracle, AI chat, and more. Built by an AI agent.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="DARKSOL Terminal — The Autonomous Agent's Command Center">
+  <meta property="og:description" content="Unified CLI for trading, bridging, wallets, agent signer, casino, oracle, cards, AgentMail, session memory, and AI chat. v0.9.0 on npm.">
+  <meta property="og:url" content="https://darksol.net/terminal">
+  <meta property="og:image" content="https://darksol.net/assets/darksol-banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Darks0l_">
+  <meta name="twitter:title" content="DARKSOL Terminal">
+  <meta name="twitter:description" content="The autonomous agent's command center. Trading, bridging, wallets, casino, oracle, AI chat — all from one CLI.">
+  <meta name="twitter:image" content="https://darksol.net/assets/darksol-banner.png">
+
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    /* Terminal page specific styles */
+    .terminal-hero {
+      position: relative;
+      z-index: 1;
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+    }
+
+    .terminal-hero-content {
+      max-width: 800px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .terminal-hero h1 {
+      font-family: var(--mono);
+      font-size: clamp(2rem, 7vw, 4rem);
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: #fff;
+      text-shadow: 0 0 40px var(--glow);
+      margin-bottom: 0.5rem;
+    }
+
+    .terminal-hero .version-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: #4ade80;
+      background: rgba(74, 222, 128, 0.1);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+    }
+
+    .install-block {
+      background: rgba(15, 15, 25, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      color: var(--blue-bright);
+      display: inline-block;
+      margin: 1.5rem 0;
+      letter-spacing: 1px;
+      user-select: all;
+    }
+
+    .install-block .prompt {
+      color: var(--text-dim);
+      user-select: none;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.8rem;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(74, 142, 255, 0.1);
+    }
+
+    .feature-card .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .feature-card h3 {
+      font-family: var(--mono);
+      font-size: 1rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      color: #9999b0;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .feature-card .feature-tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--blue);
+      background: rgba(74, 142, 255, 0.1);
+      border: 1px solid rgba(74, 142, 255, 0.2);
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      margin-top: 0.8rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .quickstart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .quickstart-item {
+      background: rgba(15, 15, 25, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+    }
+
+    .quickstart-item .cmd {
+      color: var(--blue-bright);
+      margin-bottom: 0.3rem;
+    }
+
+    .quickstart-item .desc {
+      color: var(--text-dim);
+      font-size: 0.75rem;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 2rem 0;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat .stat-value {
+      font-family: var(--mono);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--blue-bright);
+    }
+
+    .stat .stat-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    @media (max-width: 768px) {
+      .terminal-hero { padding: 5rem 1.2rem 3rem; min-height: 60vh; }
+      .terminal-hero h1 { letter-spacing: 2px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .quickstart-grid { grid-template-columns: 1fr; }
+      .install-block { font-size: 0.75rem; padding: 0.8rem 1rem; }
+      .stats-row { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="moon-canvas"></canvas>
+
+  <!-- Nav -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">DARKSOL 🌑</a>
+      <button class="nav-toggle" aria-label="Menu">☰</button>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/terminal" style="color: var(--blue-bright);">Terminal</a></li>
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#tokenization">Token</a></li>
+        <li><a href="/#roadmap">Roadmap</a></li>
+        <li><a href="/#projects">Projects</a></li>
+        <li><a href="/#links">Links</a></li>
+        <li><a href="/#revenue">Revenue</a></li>
+        <li><a href="https://casino.darksol.net" target="_blank">🎰 Casino</a></li>
+        <li><a href="https://acp.darksol.net/cards" target="_blank">💳 Cards</a></li>
+        <li><a href="https://acp.darksol.net/oracle" target="_blank">🎲 Oracle</a></li>
+        <li><a href="https://facilitator.darksol.net" target="_blank">🤝 Facilitator</a></li>
+        <li><a href="https://builders.darksol.net" target="_blank">◆ Builders</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="terminal-hero">
+    <div class="terminal-hero-content">
+      <div class="version-badge">v0.9.0 — STABLE</div>
+      <h1>DARKSOL TERMINAL</h1>
+      <p class="subtitle">The Autonomous Agent's Command Center</p>
+      <p class="tagline">One CLI. Trading, bridging, wallets, casino, oracle, AI chat, agent signer, session memory, and more. Built by an AI agent, for AI agents — and humans who think like them.</p>
+
+      <div class="install-block">
+        <span class="prompt">$ </span>npm install -g @darksol/terminal
+      </div>
+
+      <div style="margin-top: 1rem;">
+        <a href="https://www.npmjs.com/package/@darksol/terminal" target="_blank" class="cta-btn">View on npm ↗</a>
+        <a href="https://gitlab.com/darks0l/darksol-terminal" target="_blank" class="cta-btn" style="margin-left: 0.8rem;">Source ↗</a>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-value">15+</div>
+          <div class="stat-label">Modules</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">38</div>
+          <div class="stat-label">Tests</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">46</div>
+          <div class="stat-label">Files</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">60+</div>
+          <div class="stat-label">Chains</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">// FEATURES</h2>
+      <p class="section-sub">Everything an autonomous agent needs. Nothing it doesn't.</p>
+      <div class="feature-grid">
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">💱</div>
+          <h3>Trading</h3>
+          <p>Swap any token across 60+ chains via LI.FI (31 DEXs) with Uniswap V3 fallback. Interactive or flag-driven. Slippage protection, pair discovery, DCA strategies.</p>
+          <span class="feature-tag">LI.FI + Uniswap V3</span>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🌉</div>
+          <h3>Bridge</h3>
+          <p>Cross-chain transfers via 27 bridges. Send tokens between any supported chain with route optimization, status tracking, and gas estimation.</p>
+          <span class="feature-tag">27 Bridges · 60 Chains</span>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">👛</div>
+          <h3>Wallet</h3>
+          <p>AES-256-GCM encrypted wallet with multi-chain support. Create, import, send, receive. Interactive flows or CLI flags for automation. Balance checks across all chains.</p>
+          <span class="feature-tag">AES-256-GCM</span>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🔐</div>
+          <h3>Agent Signer</h3>
+          <p>Local HTTP proxy at 127.0.0.1:18790. PK-isolated signing with bearer auth, spending limits, contract allowlist, blocked selectors, and full audit log. No endpoint to extract the private key.</p>
+          <span class="feature-tag">PK-Isolated · Audit Log</span>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🎰</div>
+          <h3>Casino</h3>
+          <p>4 on-chain games: Coin Flip, Dice, Hi/Lo, Slots. $1 USDC bets with verifiable randomness, on-chain receipts, and AI-driven betting via natural language.</p>
+          <span class="feature-tag">On-Chain · Verifiable</span>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🎲</div>
+          <h3>Oracle</h3>
+          <p>Verifiable on-chain randomness. x402 pay-per-call API with auto-pay via agent signer. Smart contract proofs for every result.</p>
+          <span class="feature-tag">x402 Auto-Pay</span>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">💳</div>
+          <h3>Prepaid Cards</h3>
+          <p>Crypto-to-prepaid Visa/Mastercard. No KYC, 100+ coins accepted. Interactive ordering flow with Trocador crypto validation.</p>
+          <span class="feature-tag">No KYC · 100+ Coins</span>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">📧</div>
+          <h3>AgentMail</h3>
+          <p>Email for agents. Full inbox management — send, receive, reply, forward, threads. Encrypted API key vault with smart onboarding.</p>
+          <span class="feature-tag">Agent-Native Email</span>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🤖</div>
+          <h3>AI Chat</h3>
+          <p>Multi-provider AI chat engine. OpenAI, Anthropic, OpenRouter, Ollama, and Bankr LLM Gateway. Soul system prompt injection, session memory context.</p>
+          <span class="feature-tag">5 Providers</span>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🧠</div>
+          <h3>Session Memory</h3>
+          <p>LLM-powered conversation compaction with 20-turn rolling window. Auto-extracts preferences, facts, decisions, and lessons. Persistent across sessions.</p>
+          <span class="feature-tag">Cross-Session</span>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">👤</div>
+          <h3>Soul System</h3>
+          <p>Interactive identity setup — agent name, user name, tone presets (professional, casual, hacker, friendly, sarcastic, custom). Auto-injected into all LLM calls.</p>
+          <span class="feature-tag">6 Tone Presets</span>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">📊</div>
+          <h3>Market Intel</h3>
+          <p>Real-time price feeds, multi-chain portfolio tracking, gas estimation, and transaction history. Know what you're holding and what it costs.</p>
+          <span class="feature-tag">Multi-Chain</span>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">⚙️</div>
+          <h3>Execution Scripts</h3>
+          <p>7 pre-built templates for automated trading strategies. DCA, limit orders, rebalancing — configure and let it run.</p>
+          <span class="feature-tag">7 Templates</span>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🔑</div>
+          <h3>Key Vault</h3>
+          <p>Encrypted API key storage for all integrated services. Add, remove, list keys. Machine-password protected. Never stored in plaintext.</p>
+          <span class="feature-tag">Encrypted</span>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">📚</div>
+          <h3>Skills Directory</h3>
+          <p>Install, manage, and discover agent skills. Multi-URL fallback with embedded specs. Extend Terminal with new capabilities.</p>
+          <span class="feature-tag">Extensible</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Start -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">// QUICK START</h2>
+      <p class="section-sub">Install and go. First-run wizard handles the rest.</p>
+
+      <div class="install-block" style="display: block; text-align: left; margin-bottom: 2rem;">
+        <span class="prompt">$ </span>npm install -g @darksol/terminal<br>
+        <span class="prompt">$ </span>darksol setup
+      </div>
+
+      <div class="quickstart-grid">
+        <div class="quickstart-item fade-in">
+          <div class="cmd">$ darksol serve</div>
+          <div class="desc">Launch interactive web shell with all features</div>
+        </div>
+        <div class="quickstart-item fade-in">
+          <div class="cmd">$ darksol trade swap</div>
+          <div class="desc">Interactive token swap across 60+ chains</div>
+        </div>
+        <div class="quickstart-item fade-in">
+          <div class="cmd">$ darksol bridge send</div>
+          <div class="desc">Cross-chain transfer via 27 bridges</div>
+        </div>
+        <div class="quickstart-item fade-in">
+          <div class="cmd">$ darksol wallet</div>
+          <div class="desc">Create, import, or manage encrypted wallets</div>
+        </div>
+        <div class="quickstart-item fade-in">
+          <div class="cmd">$ darksol casino</div>
+          <div class="desc">Play on-chain casino games</div>
+        </div>
+        <div class="quickstart-item fade-in">
+          <div class="cmd">$ darksol soul</div>
+          <div class="desc">Set up agent identity and tone</div>
+        </div>
+        <div class="quickstart-item fade-in">
+          <div class="cmd">$ darksol chat</div>
+          <div class="desc">AI chat with session memory</div>
+        </div>
+        <div class="quickstart-item fade-in">
+          <div class="cmd">$ darksol send</div>
+          <div class="desc">Send ETH or ERC-20 tokens</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Links -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">// GET IT</h2>
+      <div class="links-grid">
+        <a href="https://www.npmjs.com/package/@darksol/terminal" target="_blank" class="link-card">
+          <span class="link-icon">📦</span>
+          <span>npm</span>
+        </a>
+        <a href="https://gitlab.com/darks0l/darksol-terminal" target="_blank" class="link-card">
+          <span class="link-icon">🦊</span>
+          <span>GitLab</span>
+        </a>
+        <a href="https://terminal.darksol.net" target="_blank" class="link-card">
+          <span class="link-icon">🖥️</span>
+          <span>Web Shell</span>
+        </a>
+        <a href="/" class="link-card">
+          <span class="link-icon">🌑</span>
+          <span>darksol.net</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>Built with teeth. 🌑</p>
+    <p class="footer-sub">DARKSOL Terminal — @darksol/terminal on npm — © 2026</p>
+  </footer>
+
+  <script src="../main.js"></script>
+</body>
+</html>
