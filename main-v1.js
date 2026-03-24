@@ -1,6 +1,6 @@
-// === ASCII ART GOLD PLASMA SHADER BACKGROUND ===
+// === ASCII ART SOLARIZED SHADER BACKGROUND ===
 (function () {
-  const canvas = document.getElementById('shader-canvas');
+  const canvas = document.getElementById('moon-canvas');
   const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
   if (!gl) return;
 
@@ -15,11 +15,15 @@
   resize();
   window.addEventListener('resize', resize);
 
+  // Vertex shader
   const vsSource = `
     attribute vec2 a_position;
-    void main() { gl_Position = vec4(a_position, 0.0, 1.0); }
+    void main() {
+      gl_Position = vec4(a_position, 0.0, 1.0);
+    }
   `;
 
+  // Fragment shader — ASCII solar/plasma effect
   const fsSource = `
     precision highp float;
     uniform float u_time;
@@ -27,10 +31,25 @@
     uniform vec2 u_mouse;
     uniform float u_scroll;
 
+    // Solarized palette
+    vec3 sol_base03  = vec3(0.0, 0.169, 0.212);
+    vec3 sol_base02  = vec3(0.027, 0.212, 0.259);
+    vec3 sol_base01  = vec3(0.345, 0.431, 0.459);
+    vec3 sol_blue    = vec3(0.149, 0.545, 0.824);
+    vec3 sol_cyan    = vec3(0.165, 0.631, 0.596);
+    vec3 sol_green   = vec3(0.522, 0.600, 0.0);
+    vec3 sol_yellow  = vec3(0.710, 0.537, 0.0);
+    vec3 sol_orange  = vec3(0.796, 0.294, 0.086);
+    vec3 sol_red     = vec3(0.863, 0.196, 0.184);
+    vec3 sol_magenta = vec3(0.827, 0.212, 0.510);
+    vec3 sol_violet  = vec3(0.424, 0.443, 0.769);
+
+    // Hash for pseudo-random
     float hash(vec2 p) {
       return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
     }
 
+    // Simplex-ish noise
     float noise(vec2 p) {
       vec2 i = floor(p);
       vec2 f = fract(p);
@@ -42,6 +61,7 @@
       return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
     }
 
+    // FBM
     float fbm(vec2 p) {
       float v = 0.0;
       float a = 0.5;
@@ -54,7 +74,10 @@
       return v;
     }
 
+    // ASCII character density via stepped thresholds
     float asciiDensity(float v) {
+      // Simulate ASCII art: quantize to character "weight"
+      // Characters from sparse to dense: . : - = + * # @ 
       float steps = 10.0;
       return floor(v * steps) / steps;
     }
@@ -64,7 +87,7 @@
       vec2 p = uv * 2.0 - 1.0;
       p.x *= u_resolution.x / u_resolution.y;
 
-      // ASCII grid
+      // ASCII grid — larger cells on mobile for cleaner look
       float cellSize = u_resolution.x < 600.0 ? 8.0 : 12.0;
       vec2 cell = floor(gl_FragCoord.xy / cellSize);
       vec2 cellUV = cell * cellSize / u_resolution;
@@ -85,40 +108,44 @@
 
       // Sub-cell pattern (fake character shapes)
       vec2 inCell = fract(gl_FragCoord.xy / cellSize);
+      // Create dot-matrix / character feel
       float charShape = 1.0;
+      // Horizontal scan lines
       charShape *= smoothstep(0.0, 0.1, inCell.y) * smoothstep(1.0, 0.85, inCell.y);
+      // Vertical gaps between chars
       charShape *= smoothstep(0.0, 0.08, inCell.x) * smoothstep(1.0, 0.9, inCell.x);
+      // Density-based fill: darker chars fill more, lighter chars have gaps
       float fill = step(1.0 - ascii, max(inCell.x, inCell.y) * 0.5 + 0.3);
       charShape *= mix(0.3, 1.0, fill * ascii);
 
-      // Gold/amber palette (dark to bright)
-      vec3 gold0 = vec3(0.02, 0.02, 0.04);   // near black
-      vec3 gold1 = vec3(0.06, 0.04, 0.02);
-      vec3 gold2 = vec3(0.12, 0.08, 0.02);
-      vec3 gold3 = vec3(0.20, 0.14, 0.03);
-      vec3 gold4 = vec3(0.30, 0.20, 0.04);
-      vec3 gold5 = vec3(0.42, 0.28, 0.05);
-      vec3 gold6 = vec3(0.55, 0.38, 0.06);
-      vec3 gold7 = vec3(0.68, 0.48, 0.08);
-      vec3 gold8 = vec3(0.82, 0.60, 0.12);
-      vec3 gold9 = vec3(0.95, 0.75, 0.20);   // bright gold
+      // Blue shades from dark to light
+      vec3 blue0 = vec3(0.02, 0.04, 0.10);  // near black
+      vec3 blue1 = vec3(0.04, 0.08, 0.18);
+      vec3 blue2 = vec3(0.06, 0.12, 0.28);
+      vec3 blue3 = vec3(0.08, 0.18, 0.40);
+      vec3 blue4 = vec3(0.12, 0.28, 0.55);
+      vec3 blue5 = vec3(0.15, 0.38, 0.68);
+      vec3 blue6 = vec3(0.20, 0.50, 0.80);
+      vec3 blue7 = vec3(0.30, 0.60, 0.90);
+      vec3 blue8 = vec3(0.45, 0.72, 0.95);
+      vec3 blue9 = vec3(0.65, 0.85, 1.0);  // bright ice
 
       vec3 col;
-      if (ascii < 0.1) col = gold0;
-      else if (ascii < 0.2) col = gold1;
-      else if (ascii < 0.3) col = gold2;
-      else if (ascii < 0.4) col = gold3;
-      else if (ascii < 0.5) col = gold4;
-      else if (ascii < 0.6) col = gold5;
-      else if (ascii < 0.7) col = gold6;
-      else if (ascii < 0.8) col = gold7;
-      else if (ascii < 0.9) col = gold8;
-      else col = gold9;
+      if (ascii < 0.1) col = blue0;
+      else if (ascii < 0.2) col = blue1;
+      else if (ascii < 0.3) col = blue2;
+      else if (ascii < 0.4) col = blue3;
+      else if (ascii < 0.5) col = blue4;
+      else if (ascii < 0.6) col = blue5;
+      else if (ascii < 0.7) col = blue6;
+      else if (ascii < 0.8) col = blue7;
+      else if (ascii < 0.9) col = blue8;
+      else col = blue9;
 
       // Apply character shape
       col *= charShape;
 
-      // Vignette
+      // Slight vignette
       float vig = 1.0 - dot(uv - 0.5, uv - 0.5) * 1.5;
       col *= vig;
 
@@ -139,7 +166,7 @@
     gl.shaderSource(s, source);
     gl.compileShader(s);
     if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-      console.error('Shader error:', gl.getShaderInfoLog(s));
+      console.error(gl.getShaderInfoLog(s));
       gl.deleteShader(s);
       return null;
     }
@@ -148,14 +175,13 @@
 
   const vs = createShader(gl.VERTEX_SHADER, vsSource);
   const fs = createShader(gl.FRAGMENT_SHADER, fsSource);
-  if (!vs || !fs) return;
 
   const program = gl.createProgram();
   gl.attachShader(program, vs);
   gl.attachShader(program, fs);
   gl.linkProgram(program);
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    console.error('Program error:', gl.getProgramInfoLog(program));
+    console.error(gl.getProgramInfoLog(program));
     return;
   }
   gl.useProgram(program);
@@ -200,10 +226,11 @@
   render();
 })();
 
-// === MOBILE NAV ===
+// === MOBILE NAV TOGGLE ===
 document.querySelector('.nav-toggle').addEventListener('click', () => {
   document.querySelector('.nav-links').classList.toggle('open');
 });
+
 document.querySelectorAll('.nav-links a').forEach(link => {
   link.addEventListener('click', () => {
     document.querySelector('.nav-links').classList.remove('open');
@@ -221,70 +248,8 @@ const observer = new IntersectionObserver(
 );
 document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
 
-// === NAV SCROLL EFFECT ===
+// === NAV BACKGROUND ON SCROLL ===
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('navbar');
-  nav.style.background = window.scrollY > 50
-    ? 'rgba(10, 10, 15, 0.97)'
-    : 'rgba(10, 10, 15, 0.92)';
+  nav.style.background = window.scrollY > 50 ? 'rgba(10, 10, 15, 0.95)' : 'rgba(10, 10, 15, 0.9)';
 });
-
-// === DAYS ALIVE COUNTER ===
-(function () {
-  const born = new Date('2026-02-21');
-  const now = new Date();
-  const days = Math.floor((now - born) / (1000 * 60 * 60 * 24));
-  const el = document.getElementById('stat-days');
-  if (el) el.textContent = days;
-})();
-
-// === FEED LOADER ===
-(async function () {
-  try {
-    const res = await fetch('feed.json');
-    const feed = await res.json();
-    const list = document.getElementById('feed-list');
-    if (!list) return;
-
-    feed.forEach(item => {
-      const div = document.createElement('div');
-      div.className = 'feed-item fade-in';
-      div.innerHTML = `
-        <div class="feed-date">${item.date}</div>
-        <div class="feed-title">${item.title}</div>
-        <div class="feed-body">${item.body}</div>
-        <div class="feed-tags">${item.tags.map(t => `<span class="feed-tag">${t}</span>`).join('')}</div>
-      `;
-      list.appendChild(div);
-    });
-
-    // Observe new feed items
-    list.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-  } catch (e) {
-    console.log('Feed load skipped:', e);
-  }
-})();
-
-// === PROJECT FILTER ===
-(function () {
-  const btns = document.querySelectorAll('.filter-btn');
-  const cards = document.querySelectorAll('.project-card');
-
-  btns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      btns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const filter = btn.dataset.filter;
-
-      cards.forEach(card => {
-        const tags = card.dataset.tags || '';
-        if (filter === 'all' || tags.includes(filter)) {
-          card.classList.remove('hidden');
-        } else {
-          card.classList.add('hidden');
-        }
-      });
-    });
-  });
-})();
