@@ -196,6 +196,18 @@ body {
   border-color: var(--gold-dim);
 }
 
+.btn.disabled,
+.btn:disabled,
+.btn.disabled:hover {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+  color: var(--text-muted) !important;
+  border-color: var(--text-muted) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 .hero-stats {
   display: flex;
   gap: 2.5rem;
@@ -757,6 +769,16 @@ body {
   color: var(--text-muted);
   margin-top: 0.3rem;
   text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.coming-soon {
+  display: inline-block;
+  background: rgba(100, 100, 120, 0.2);
+  border: 1px solid rgba(100, 100, 120, 0.3);
+  border-radius: 20px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.6rem;
+  color: var(--text-muted);
   letter-spacing: 1px;
 }
 .token-buy {
