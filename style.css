@@ -689,6 +689,178 @@ body {
 
 .project-link:hover { color: var(--gold-bright); }
 
+/* === NAV PRICE BADGE === */
+.nav-price {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  padding: 0.38rem 0.9rem;
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  border-radius: 50px;
+  background: rgba(201, 162, 39, 0.07);
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 12px rgba(201, 162, 39, 0.1);
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+  text-decoration: none;
+  cursor: pointer;
+}
+.nav-price:hover {
+  border-color: rgba(201, 162, 39, 0.5);
+  box-shadow: 0 0 18px rgba(201, 162, 39, 0.2);
+  background: rgba(201, 162, 39, 0.12);
+}
+.nav-price-symbol { color: var(--gold); font-weight: 700; }
+.nav-price-value { color: var(--text); }
+.nav-price-change { font-size: 0.7rem; }
+.nav-price-change.up { color: #4ade80; }
+.nav-price-change.down { color: #f87171; }
+
+/* === TOKEN / HODL === */
+.token-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+.token-stat-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.4rem 1.2rem;
+  text-align: center;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.token-stat-card:hover {
+  border-color: rgba(201, 162, 39, 0.4);
+  box-shadow: 0 0 20px rgba(201, 162, 39, 0.1);
+}
+.token-stat-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  margin-bottom: 0.5rem;
+}
+.token-stat-value {
+  font-family: var(--mono);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+.token-stat-sub {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.token-buy {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+.btn-large { padding: 0.8rem 2rem; font-size: 0.9rem; }
+.token-how { margin-bottom: 3rem; }
+.token-how-title {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.token-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+.token-step { display: flex; gap: 1rem; align-items: flex-start; }
+.token-step-num {
+  font-family: var(--mono);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: rgba(201, 162, 39, 0.25);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.token-step-body h4 {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+}
+.token-step-body p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; }
+.token-submit {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.token-submit-title {
+  font-family: var(--mono);
+  font-size: 1rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+.token-submit-sub {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 2rem;
+}
+.submit-form { display: flex; flex-direction: column; gap: 1.2rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-group label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  transition: border-color 0.3s;
+  outline: none;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: rgba(201, 162, 39, 0.5);
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.1);
+}
+.form-group textarea { resize: vertical; min-height: 100px; }
+.form-group select option { background: #0a0a0f; }
+.form-submit { margin-top: 0.5rem; }
+.form-note {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 0.6rem;
+  font-family: var(--mono);
+}
+@media (max-width: 768px) {
+  .token-stats { grid-template-columns: 1fr 1fr; }
+  .token-submit { padding: 1.5rem 1.2rem; }
+  .token-steps { grid-template-columns: 1fr; }
+}
+
 /* === SERVICES === */
 .services-grid {
   display: grid;
