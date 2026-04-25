@@ -1,32 +1,72 @@
 [
   {
+    "date": "2026-04-25",
+    "title": "$DARKSOL Token Command Room Split Out",
+    "body": "Moved the token section off the homepage into a dedicated token.html command room: live price feed, utility map, task tiers, staged payment intake, and a roadmap for on-chain reads, pay-to-task, holder gates, and roadmap signaling.",
+    "tags": [
+      "token",
+      "darksol",
+      "website"
+    ]
+  },
+  {
+    "date": "2026-04-09",
+    "title": "Terminal Hits v0.17 with 6 Major Releases",
+    "body": "15 releases in one night set the pace -- now @darksol/terminal is at v0.17.0 (Apr 9), gpu-orchestrator at v0.8.0 (Apr 17), darksol core at v0.5.0, context-kernel at v0.3.0, and @darksol/bankr-router at v1.2.2. All dependency-clean, all published.",
+    "tags": [
+      "npm",
+      "terminal",
+      "shipping"
+    ]
+  },
+  {
     "date": "2026-03-23",
     "title": "Synthesis Hackathon -- Two Submissions Locked",
     "body": "Shipped two entries for the Synthesis Hackathon: the full Autonomous Agent Economy Stack (5 contracts, 16 modules, 62 tests, 10+ live trades on Base) and AutoResearch (230+ experiments, best score 8.176). Both are live on Devfolio. Winners announced March 25.",
-    "tags": ["hackathon", "base", "shipping"]
+    "tags": [
+      "hackathon",
+      "base",
+      "shipping"
+    ]
   },
   {
     "date": "2026-03-21",
     "title": "npm Package Sweep -- 4 Packages Updated",
     "body": "Bumped @darksol/terminal to 0.14.1, darksol to 0.4.1, gpu-orchestrator to 0.5.1, and @darksol/bankr-router to 1.2.1. All dependency updates, all tests passing, all published and verified.",
-    "tags": ["npm", "maintenance"]
+    "tags": [
+      "npm",
+      "maintenance"
+    ]
   },
   {
     "date": "2026-03-15",
     "title": "Cross-DEX Arb Engine Goes Live",
     "body": "Terminal v0.13.0 shipped with a 6-DEX arbitrage engine spanning 5 chains. v0.13.1 added AI intelligence -- strategy briefings, pair discovery, threshold tuning, and pattern filtering baked into the scanner.",
-    "tags": ["trading", "terminal", "defi"]
+    "tags": [
+      "trading",
+      "terminal",
+      "defi"
+    ]
   },
   {
     "date": "2026-03-09",
     "title": "Terminal Marathon -- 15 Releases in One Night",
     "body": "From v0.4.2 to v0.6.3 in a single session. Casino integration (4 games), x402 auto-pay client, oracle wiring, interactive card ordering, deep black UI theme. 42 files changed, 38 tests passing.",
-    "tags": ["terminal", "shipping", "casino"]
+    "tags": [
+      "terminal",
+      "shipping",
+      "casino"
+    ]
   },
   {
     "date": "2026-03-05",
     "title": "DARKSOL Facilitator -- Free x402 for Everyone",
     "body": "Deployed a free on-chain x402 payment facilitator to Base and Polygon. Zero fees, gas covered by DARKSOL. Sourcify verified. First live 0.01 USDC settlement confirmed.",
-    "tags": ["x402", "base", "polygon", "shipping"]
+    "tags": [
+      "x402",
+      "base",
+      "polygon",
+      "shipping"
+    ]
   }
 ]

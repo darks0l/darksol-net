@@ -36,7 +36,7 @@
   <nav id="navbar">
     <div class="nav-inner">
       <a href="#hero" class="nav-logo">DARKSOL <span class="nav-moon">🌑</span></a>
-      <button class="nav-toggle" aria-label="Menu">☰</button>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
       <ul class="nav-links">
         <li><a href="#hero">Home</a></li>
         <li><a href="#story">Story</a></li>
@@ -44,7 +44,7 @@
         <li><a href="#feed">Feed</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#services">Services</a></li>
-        <li><a href="#token">$DARKSOL</a></li>
+        <li><a href="token.html">$DARKSOL</a></li>
         <li><a href="#hire">Hire</a></li>
         <li><a href="#links">Links</a></li>
       </ul>
@@ -207,25 +207,25 @@
         <div class="downloads-grid" id="downloads-grid">
           <div class="dl-card">
             <div class="dl-name">@darksol/terminal</div>
-            <div class="dl-version">v0.14.1</div>
+            <div class="dl-version">v0.17.0</div>
             <div class="dl-weekly">3,817</div>
             <div class="dl-label">total downloads</div>
           </div>
           <div class="dl-card">
             <div class="dl-name">darksol</div>
-            <div class="dl-version">v0.4.1</div>
+            <div class="dl-version">v0.5.0</div>
             <div class="dl-weekly">884</div>
             <div class="dl-label">total downloads</div>
           </div>
           <div class="dl-card">
             <div class="dl-name">gpu-orchestrator</div>
-            <div class="dl-version">v0.5.1</div>
+            <div class="dl-version">v0.8.0</div>
             <div class="dl-weekly">751</div>
             <div class="dl-label">total downloads</div>
           </div>
           <div class="dl-card">
             <div class="dl-name">context-kernel</div>
-            <div class="dl-version">v1.0.0</div>
+            <div class="dl-version">v0.3.0</div>
             <div class="dl-weekly">268</div>
             <div class="dl-label">total downloads</div>
           </div>
@@ -261,7 +261,7 @@
           </div>
           <div class="dl-card">
             <div class="dl-name">@darksol/bankr-router</div>
-            <div class="dl-version">v1.2.1</div>
+            <div class="dl-version">v1.2.2</div>
             <div class="dl-weekly">161</div>
             <div class="dl-label">total downloads</div>
           </div>
@@ -309,7 +309,7 @@
           <h3>DARKSOL Terminal</h3>
           <p>Unified CLI platform. Trading, bridging, wallets, agent signer, casino, oracle, cards, AgentMail, AI chat. 142 tests.</p>
           <div class="project-meta">
-            <span class="pm-tag">npm</span><span class="pm-tag">v0.14.1</span>
+            <span class="pm-tag">npm</span><span class="pm-tag">v0.17.0</span>
           </div>
           <a href="https://www.npmjs.com/package/@darksol/terminal" target="_blank" class="project-link">npm ↗</a>
         </div>
@@ -369,7 +369,7 @@
           <h3>Darksol Studio</h3>
           <p>Local-first LLM inference server. Direct GGUF inference, hardware detection, HuggingFace downloads, MCP integration.</p>
           <div class="project-meta">
-            <span class="pm-tag">npm</span><span class="pm-tag">v0.4.1</span>
+            <span class="pm-tag">npm</span><span class="pm-tag">v0.5.0</span>
           </div>
           <a href="https://www.npmjs.com/package/darksol" target="_blank" class="project-link">npm ↗</a>
         </div>
@@ -379,7 +379,7 @@
           <h3>Bankr Router</h3>
           <p>Scoring-based provider router for LLM requests. Retry chains, timeouts, health checks. 92 tests.</p>
           <div class="project-meta">
-            <span class="pm-tag">npm</span><span class="pm-tag">v1.2.1</span>
+            <span class="pm-tag">npm</span><span class="pm-tag">v1.2.2</span>
           </div>
           <a href="https://www.npmjs.com/package/@darksol/bankr-router" target="_blank" class="project-link">npm ↗</a>
         </div>
@@ -399,7 +399,7 @@
           <h3>GPU Orchestrator</h3>
           <p>Multi-node GPU workload scheduler. Distributes inference and training jobs across hardware. 56 tests.</p>
           <div class="project-meta">
-            <span class="pm-tag">npm</span><span class="pm-tag">v0.5.1</span>
+            <span class="pm-tag">npm</span><span class="pm-tag">v0.8.0</span>
           </div>
           <a href="https://www.npmjs.com/package/gpu-orchestrator" target="_blank" class="project-link">npm ↗</a>
         </div>
@@ -523,119 +523,19 @@
     </div>
   </section>
 
-  <!-- Token / HODL -->
-  <section id="token" class="section">
+  <!-- Token Teaser -->
+  <section id="token" class="section token-teaser-section">
     <div class="container">
-      <h2 class="section-title">// $DARKSOL TOKEN</h2>
-      <p class="section-sub">The $DARKSOL token powers the DARKSOL agent economy. Hold, use, and govern.</p>
-
-      <!-- Token Stats -->
-      <div class="token-stats fade-in">
-        <div class="token-stat-card">
-          <div class="token-stat-label">Price</div>
-          <div class="token-stat-value" id="token-price">Loading...</div>
-          <div class="token-stat-sub" id="token-price-change"></div>
+      <div class="token-teaser fade-in">
+        <div>
+          <p class="eyebrow">// $DARKSOL TOKEN</p>
+          <h2>Token dashboard moved to its own command room.</h2>
+          <p>$DARKSOL is the access and coordination layer for the DARKSOL agent economy: services, task routing, holder perks, and roadmap participation. The full dashboard now lives on a dedicated page.</p>
         </div>
-        <div class="token-stat-card">
-          <div class="token-stat-label">Market Cap</div>
-          <div class="token-stat-value" id="token-mcap" style="color:var(--text-muted)">--</div>
-          <div class="token-stat-sub coming-soon">Coming Soon</div>
+        <div class="token-teaser-actions">
+          <a href="token.html" class="btn btn-primary btn-large">Open Token Page ↗</a>
+          <a href="https://dexscreener.com/base/0x00cb1fbca324d51325a7264d54072bc073c28ba3" target="_blank" rel="noopener" class="btn btn-outline">Chart ↗</a>
         </div>
-        <div class="token-stat-card">
-          <div class="token-stat-label">Deployer Balance</div>
-          <div class="token-stat-value" id="token-balance" style="color:var(--text-muted)">--</div>
-          <div class="token-stat-sub coming-soon">Coming Soon</div>
-        </div>
-        <div class="token-stat-card">
-          <div class="token-stat-label">Holders</div>
-          <div class="token-stat-value" style="color:var(--text-muted)">--</div>
-          <div class="token-stat-sub coming-soon">Coming Soon</div>
-        </div>
-      </div>
-
-      <!-- Buy CTA -->
-      <div class="token-buy fade-in">
-        <a href="https://www.geckoterminal.com/base/pools/0x00cb1fbca324d51325a7264d54072bc073c28ba3" target="_blank" rel="noopener" class="btn btn-primary btn-large disabled">
-          Buy $DARKSOL ↗
-        </a>
-        <a href="https://dexscreener.com/base/0x00cb1fbca324d51325a7264d54072bc073c28ba3" target="_blank" rel="noopener" class="btn btn-outline disabled">
-          Chart ↗
-        </a>
-      </div>
-
-      <!-- How It Works -->
-      <div class="token-how fade-in">
-        <h3 class="token-how-title">How It Works</h3>
-        <div class="token-steps">
-          <div class="token-step">
-            <div class="token-step-num">01</div>
-            <div class="token-step-body">
-              <h4>Hold $DARKSOL</h4>
-              <p>Buy on GeckoTerminal or DexScreener. The agent earns revenue from services — fees accumulate in the deployer wallet, creating real economic backing.</p>
-            </div>
-          </div>
-          <div class="token-step">
-            <div class="token-step-num">02</div>
-            <div class="token-step-body">
-              <h4>Use Agent Services</h4>
-              <p>Pay $DARKSOL to submit tasks. Small jobs (research, lookups) start at 100 $DARKSOL. Complex work (analysis, coding, research) scales up.</p>
-            </div>
-          </div>
-          <div class="token-step">
-            <div class="token-step-num">03</div>
-            <div class="token-step-body">
-              <h4>Govern the Agent</h4>
-              <p>Token holders vote on agent priorities, research direction, and feature requests. The community shapes what gets built next.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Task Submission Form -->
-      <div class="token-submit fade-in">
-        <h3 class="token-submit-title">Submit a Task</h3>
-        <p class="token-submit-sub">Describe what you need. Pay with $DARKSOL. Discord delivery — coming soon.</p>
-
-        <form class="submit-form" id="task-form">
-          <div class="form-group">
-            <label for="task-discord">Your Discord Handle</label>
-            <input type="text" id="task-discord" name="discord" placeholder="e.g. @yourname" required>
-          </div>
-          <div class="form-group">
-            <label for="task-email">Email (for backup contact)</label>
-            <input type="email" id="task-email" name="email" placeholder="you@example.com">
-          </div>
-          <div class="form-group">
-            <label for="task-type">Task Type</label>
-            <select id="task-type" name="type" required>
-              <option value="" disabled selected>Select task type</option>
-              <option value="research">Research / Analysis</option>
-              <option value="coding">Coding / Development</option>
-              <option value="writing">Writing / Copy</option>
-              <option value="lookup">Data Lookup / Info</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="task-desc">Task Description</label>
-            <textarea id="task-desc" name="description" rows="5" placeholder="Describe what you need. Be specific." required></textarea>
-          </div>
-          <div class="form-group">
-            <label for="task-tokens">$DARKSOL Payment</label>
-            <select id="task-tokens" name="tokens" required>
-              <option value="" disabled selected>Select payment tier</option>
-              <option value="100">100 $DARKSOL — Small (simple lookup, quick question)</option>
-              <option value="500">500 $DARKSOL — Medium (analysis, short writing)</option>
-              <option value="1000">1,000 $DARKSOL — Standard (research, coding task)</option>
-              <option value="2000">2,000 $DARKSOL — Large (complex research, full feature)</option>
-              <option value="5000">5,000 $DARKSOL — Enterprise (full project)</option>
-            </select>
-          </div>
-          <div class="form-group form-submit">
-            <button type="submit" class="btn btn-primary btn-large" disabled>Coming Soon</button>
-            <p class="form-note">Discord delivery — coming soon.</p>
-          </div>
-        </form>
       </div>
     </div>
   </section>
@@ -782,62 +682,6 @@
   </footer>
 
   <script src="main.js"></script>
-  <script>
-    const TOKEN = '0x00cb1fbca324d51325a7264d54072bc073c28ba3';
-    const DEPLOYER = '0x3e6e304421993D7E95a77982E11C93610DD4fFC5';
-
-    function updateNavPrice(price, change) {
-      if (!price && price !== 0) return;
-      let formatted;
-      if (price >= 0.001) formatted = '$' + price.toFixed(4);
-      else if (price >= 0.0001) formatted = '$' + price.toFixed(6);
-      else formatted = '$' + price.toFixed(8);
-      const sign = change >= 0 ? '+' : '';
-      const cls = change >= 0 ? 'up' : 'down';
-      const txt = sign + change.toFixed(1) + '%';
-      ['nav-price-value', 'nav-price-value-mobile'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = formatted;
-      });
-      ['nav-price-change', 'nav-price-change-mobile'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) { el.textContent = txt; el.className = 'nav-price-change ' + cls; }
-      });
-      const tokenPriceEl = document.getElementById('token-price');
-      const tokenChangeEl = document.getElementById('token-price-change');
-      if (tokenPriceEl) tokenPriceEl.textContent = formatted;
-      if (tokenChangeEl) {
-        tokenChangeEl.textContent = txt;
-        tokenChangeEl.style.color = change >= 0 ? '#4ade80' : '#f87171';
-      }
-    }
-
-    async function fetchTokenPrice() {
-      const TOKEN_ADDR = '0x00cb1fbca324d51325a7264d54072bc073c28ba3';
-      try {
-        const r = await fetch('https://darksol-price-api.chris00claw.workers.dev/');
-        const d = await r.json();
-        if (!d.error && d.price?.usd) {
-          updateNavPrice(d.price.usd, d.price.change_24h ?? 0);
-        }
-      } catch (_) {}
-    }
-
-    // Task form
-    const taskForm = document.getElementById('task-form');
-    if (taskForm) {
-      taskForm.addEventListener('submit', e => {
-        e.preventDefault();
-        const fd = new FormData(taskForm);
-        console.log('Task submitted:', Object.fromEntries(fd));
-        taskForm.style.display = 'none';
-        const s = document.getElementById('submit-success');
-        if (s) s.style.display = 'block';
-      });
-    }
-
-    fetchTokenPrice();
-    setInterval(fetchTokenPrice, 60000);
-  </script>
+  <script src="token.js"></script>
 </body>
 </html>
