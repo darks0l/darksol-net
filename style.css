@@ -111,6 +111,19 @@ body {
 }
 
 .nav-links a:hover { color: var(--gold-bright); }
+.nav-links a.nav-spendhub {
+  color: var(--gold-bright);
+  border: 1px solid rgba(212, 160, 23, 0.42);
+  background: rgba(212, 160, 23, 0.1);
+  border-radius: 999px;
+  padding: 0.45rem 0.75rem;
+  box-shadow: 0 0 16px rgba(212, 160, 23, 0.12);
+}
+.nav-links a.nav-spendhub:hover {
+  color: #0a0a0f;
+  background: var(--gold-bright);
+  box-shadow: 0 0 24px rgba(212, 160, 23, 0.28);
+}
 
 /* === HERO === */
 #hero {
