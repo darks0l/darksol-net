@@ -111,7 +111,8 @@ body {
 }
 
 .nav-links a:hover { color: var(--gold-bright); }
-.nav-links a.nav-spendhub {
+.nav-links a.nav-spendhub,
+.nav-links a.nav-agentcomms {
   color: var(--gold-bright);
   border: 1px solid rgba(212, 160, 23, 0.42);
   background: rgba(212, 160, 23, 0.1);
@@ -119,10 +120,21 @@ body {
   padding: 0.45rem 0.75rem;
   box-shadow: 0 0 16px rgba(212, 160, 23, 0.12);
 }
-.nav-links a.nav-spendhub:hover {
+.nav-links a.nav-agentcomms {
+  color: #94f7ff;
+  border-color: rgba(106, 176, 255, 0.42);
+  background: rgba(74, 142, 255, 0.1);
+  box-shadow: 0 0 16px rgba(74, 142, 255, 0.12);
+}
+.nav-links a.nav-spendhub:hover,
+.nav-links a.nav-agentcomms:hover {
   color: #0a0a0f;
   background: var(--gold-bright);
   box-shadow: 0 0 24px rgba(212, 160, 23, 0.28);
+}
+.nav-links a.nav-agentcomms:hover {
+  background: #94f7ff;
+  box-shadow: 0 0 24px rgba(74, 142, 255, 0.28);
 }
 
 /* === HERO === */
