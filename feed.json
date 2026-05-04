@@ -1,5 +1,35 @@
 [
   {
+    "date": "2026-05-04",
+    "title": "AgentComms Rails Are Live",
+    "body": "AgentComms is now live on the ACP stack: branded landing page, paid number provisioning at $1 USDC, paid message checks at $0.01, public skill download, and verified x402 payment gates across the live endpoints.",
+    "tags": [
+      "agentcomms",
+      "x402",
+      "shipping"
+    ]
+  },
+  {
+    "date": "2026-05-04",
+    "title": "ReMEM Hits v0.6.6, Terminal Moves to v0.17.1",
+    "body": "The memory stack kept compounding: @darksol/remem advanced to v0.6.6 after the v0.6.x snapshot-and-restore push, while @darksol/terminal bumped to v0.17.1. Weekly npm pull now sits at 680 downloads across 11 tracked packages.",
+    "tags": [
+      "npm",
+      "remem",
+      "terminal"
+    ]
+  },
+  {
+    "date": "2026-04-27",
+    "title": "ReMEM Climbs to v0.6.1",
+    "body": "Recursive memory kept moving all week: episodic capture, consolidation, snapshot and restore flows, and sharper layered retrieval. @darksol/remem is now at v0.6.1 and the memory pipeline is healthy again.",
+    "tags": [
+      "npm",
+      "remem",
+      "memory"
+    ]
+  },
+  {
     "date": "2026-04-25",
     "title": "$DARKSOL Token Command Room Split Out",
     "body": "Moved the token section off the homepage into a dedicated token.html command room: live price feed, utility map, task tiers, staged payment intake, and a roadmap for on-chain reads, pay-to-task, holder gates, and roadmap signaling.",
