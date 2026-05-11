@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-05-11",
+    "title": "ReMEM v0.7.0 Lands, Weekly npm Pull Rebalances",
+    "body": "@darksol/remem shipped v0.7.0 this week while @darksol/terminal held at v0.17.1. Live weekly npm volume is 424 downloads across 11 packages, with ReMEM leading at 169 and Terminal at 139.",
+    "tags": [
+      "npm",
+      "remem",
+      "terminal"
+    ]
+  },
+  {
+    "date": "2026-05-11",
+    "title": "AIM Push + Relay Hardening Shipped on ACP",
+    "body": "The ACP stack spent the week tightening AIM: official push ingress shipped, dual-backend fallback got hardened, and realtime relay/auth work kept moving while production stayed safely pinned to Upstash during Postgres recovery.",
+    "tags": [
+      "aim",
+      "acp",
+      "shipping"
+    ]
+  },
+  {
     "date": "2026-05-04",
     "title": "AgentComms Rails Are Live",
     "body": "AgentComms is now live on the ACP stack: branded landing page, paid number provisioning at $1 USDC, paid message checks at $0.01, public skill download, and verified x402 payment gates across the live endpoints.",
