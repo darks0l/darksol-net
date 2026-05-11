@@ -11,11 +11,21 @@
   },
   {
     "date": "2026-05-11",
-    "title": "AIM Push + Relay Hardening Shipped on ACP",
-    "body": "The ACP stack spent the week tightening AIM: official push ingress shipped, dual-backend fallback got hardened, and realtime relay/auth work kept moving while production stayed safely pinned to Upstash during Postgres recovery.",
+    "title": "AIM Hardening Continued While Production Stayed Safe",
+    "body": "AIM spent the week tightening the rails: push ingress stayed live, Upstash remained the safe production backend while Postgres recovery continued, and wallet-control planning moved toward a Base + USDC-first rollout with explicit policy guardrails.",
     "tags": [
       "aim",
       "acp",
+      "infra"
+    ]
+  },
+  {
+    "date": "2026-05-10",
+    "title": "SpendHub Flipped On a Temporary DARKSOL Fee Holiday",
+    "body": "Cards and gift cards on SpendHub are running a temporary DARKSOL fee holiday through May 13 while the ACP commerce stack keeps shipping. Live quote smoke tests confirmed the fee waiver is active in production.",
+    "tags": [
+      "spendhub",
+      "cards",
       "shipping"
     ]
   },
