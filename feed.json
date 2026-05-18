@@ -1,5 +1,35 @@
 [
   {
+    "date": "2026-05-18",
+    "title": "Terminal v0.17.2 Took the Weekly Lead",
+    "body": "@darksol/terminal moved to v0.17.2 with wiretap support and jumped to 365 weekly npm downloads. Across the 11 live packages tracked on the site, weekly volume now sits at 572 with Terminal clearly out front.",
+    "tags": [
+      "npm",
+      "terminal",
+      "shipping"
+    ]
+  },
+  {
+    "date": "2026-05-18",
+    "title": "Operator Tooling Shipped on the Infra Layer",
+    "body": "gpu-orchestrator shipped v0.8.1 while ipfs-bootstrap landed v0.3.0, pushing the operator stack forward with fresh packaging and release work instead of just maintenance.",
+    "tags": [
+      "infra",
+      "gpu",
+      "ipfs"
+    ]
+  },
+  {
+    "date": "2026-05-18",
+    "title": "AIM Verification Path Got Cleaner",
+    "body": "This week also tightened operational clarity around AIM: registration checks now point at the local auth store plus live auth/me verification instead of chasing a nonexistent public registrations endpoint.",
+    "tags": [
+      "aim",
+      "acp",
+      "ops"
+    ]
+  },
+  {
     "date": "2026-05-11",
     "title": "ReMEM v0.7.0 Lands, Weekly npm Pull Rebalances",
     "body": "@darksol/remem shipped v0.7.0 this week while @darksol/terminal held at v0.17.1. Live weekly npm volume is 424 downloads across 11 packages, with ReMEM leading at 169 and Terminal at 139.",
