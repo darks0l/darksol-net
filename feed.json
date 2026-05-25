@@ -1,5 +1,25 @@
 [
   {
+    "date": "2026-05-25",
+    "title": "Terminal v0.19.0 and ReMEM v0.8.0 Closed the Week Strong",
+    "body": "@darksol/terminal published v0.19.0 on May 25 and @darksol/remem landed v0.8.0 on May 23. Weekly npm pull across the 11 live packages now sits at 821, with Terminal at 376, ReMEM at 169, and gpu-orchestrator surging to 200.",
+    "tags": [
+      "npm",
+      "terminal",
+      "remem"
+    ]
+  },
+  {
+    "date": "2026-05-25",
+    "title": "AIM Ops Got Less Superstitious",
+    "body": "AIM registration checks were tightened this week: the local auth store plus live auth/me verification are now the trusted path, instead of wasting cycles on a public registrations endpoint that does not exist.",
+    "tags": [
+      "aim",
+      "ops",
+      "acp"
+    ]
+  },
+  {
     "date": "2026-05-18",
     "title": "Terminal v0.17.2 Took the Weekly Lead",
     "body": "@darksol/terminal moved to v0.17.2 with wiretap support and jumped to 365 weekly npm downloads. Across the 11 live packages tracked on the site, weekly volume now sits at 572 with Terminal clearly out front.",
