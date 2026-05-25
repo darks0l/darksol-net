@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DARKSOL Thesis</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌑</text></svg>">
+  <meta name="description" content="The DARKSOL thesis: agent infrastructure, payments, memory, and the token flywheel.">
+  <meta name="theme-color" content="#000000">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="DARKSOL Thesis">
+  <meta property="og:description" content="The flywheel behind DARKSOL: agent infrastructure, payments, wallets, cards, memory, and token utility.">
+  <meta property="og:url" content="https://darksol.net/thesis.html">
+  <meta property="og:image" content="https://darksol.net/assets/darksol-banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Darks0l_">
+  <meta name="twitter:title" content="DARKSOL Thesis">
+  <meta name="twitter:description" content="The flywheel behind DARKSOL: agent infrastructure, payments, wallets, cards, memory, and token utility.">
+  <meta name="twitter:image" content="https://darksol.net/assets/darksol-banner.png">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #000000;
+      --panel: #0b0b0b;
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.72);
+      --soft: rgba(255,255,255,0.14);
+      --mono: 'Space Mono', monospace;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.7;
+    }
+    a { color: var(--text); }
+    .shell {
+      width: min(880px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 48px 0 96px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 48px;
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .topbar a {
+      text-decoration: none;
+      color: var(--muted);
+    }
+    .topbar a:hover { color: var(--text); }
+    .logo-wrap {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .logo-wrap img {
+      width: min(760px, 100%);
+      height: auto;
+      display: inline-block;
+    }
+    .eyebrow {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 0 0 14px;
+    }
+    h1 {
+      font-size: clamp(40px, 7vw, 72px);
+      line-height: 1.02;
+      margin: 0 0 20px;
+      letter-spacing: -0.04em;
+    }
+    .lede {
+      font-size: clamp(18px, 2.6vw, 24px);
+      color: var(--muted);
+      margin: 0 0 44px;
+      max-width: 760px;
+    }
+    .section {
+      border-top: 1px solid var(--soft);
+      padding-top: 32px;
+      margin-top: 32px;
+    }
+    h2 {
+      font-size: 24px;
+      margin: 0 0 14px;
+      letter-spacing: -0.02em;
+    }
+    p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+    li {
+      margin: 0 0 14px;
+      font-size: 17px;
+    }
+    strong { color: var(--text); }
+    .quote {
+      border-left: 2px solid var(--text);
+      padding-left: 18px;
+      margin: 24px 0 0;
+      color: var(--text);
+      font-size: 20px;
+    }
+    .footer {
+      border-top: 1px solid var(--soft);
+      margin-top: 52px;
+      padding-top: 20px;
+      color: rgba(255,255,255,0.5);
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    @media (max-width: 640px) {
+      .shell { padding-top: 28px; }
+      .topbar { margin-bottom: 28px; }
+      .logo-wrap { margin-bottom: 28px; }
+      p, li { font-size: 16px; }
+      .quote { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topbar">
+      <a href="index.html">DARKSOL</a>
+      <a href="token.html">$DARKSOL</a>
+    </div>
+
+    <div class="logo-wrap">
+      <img src="assets/darksol-banner.png" alt="DARKSOL logo">
+    </div>
+
+    <header>
+      <p class="eyebrow">Thesis</p>
+      <h1>DARKSOL is building the rails for autonomous agents to remember, transact, pay, spend, and operate.</h1>
+      <p class="lede">The point is not just to have a token. The point is to build real utility surfaces around agent infrastructure, payments, cards, memory, commerce, and APIs, so the ecosystem gets stronger through use instead of pure narrative. Revenue generated by those utilities is intended to cycle back into the token through market buys and treasury accumulation.</p>
+    </header>
+
+    <section class="section">
+      <h2>What DARKSOL is</h2>
+      <p><strong>DARKSOL</strong> is an ecosystem for agent infrastructure, agent payments, and agent-native products.</p>
+      <p>The thesis is simple: serious agents need real rails. Not just models. Not just chat. They need memory, wallets, payments, cards, commerce, and infrastructure that lets them act in the world.</p>
+    </section>
+
+    <section class="section">
+      <h2>What is in the ecosystem</h2>
+      <ul>
+        <li><strong>AIM</strong> — the current flagship direction; agent wallet and payment capabilities.</li>
+        <li><strong>ACP / darksol-acp</strong> — the operating, comms, and commerce rail behind agent actions.</li>
+        <li><strong>Cards</strong> — prepaid card surface at <strong>acp.darksol.net/cards</strong>.</li>
+        <li><strong>Oracle</strong> — paid random oracle at <strong>acp.darksol.net/oracle</strong>.</li>
+        <li><strong>x402 Facilitator</strong> — machine-to-machine payment rail for paid actions and APIs.</li>
+        <li><strong>ReMEM</strong> — persistent memory for AI agents.</li>
+        <li><strong>Additional products and tools</strong> — builders, casino, cemetery, and the broader DARKSOL infra stack.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>What the token does</h2>
+      <p>The <strong>$DARKSOL</strong> token is the ecosystem alignment asset.</p>
+      <ul>
+        <li><strong>Free oracle API access</strong> for large holders.</li>
+        <li><strong>0% DARKSOL service fee on cards</strong> for large holders.</li>
+      </ul>
+      <p>So the token already functions as an access tier, a fee advantage, and a power-user alignment asset inside the network.</p>
+    </section>
+
+    <section class="section">
+      <h2>The flywheel</h2>
+      <ul>
+        <li>DARKSOL ships useful agent infrastructure and products.</li>
+        <li>Those products create usage: payments, cards, wallets, API calls, and agent actions.</li>
+        <li>Usage creates fees, attention, and ecosystem gravity.</li>
+        <li>Revenue from each utility is routed back into the token through treasury buys and accumulated as treasury holdings.</li>
+        <li>Token holders get better access and lower fees.</li>
+        <li>That makes the token more attractive to hold and use inside the network.</li>
+        <li>More holders, users, and builders strengthen the ecosystem and justify more products.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Why it matters</h2>
+      <p>Most projects stop at “we have a token.” DARKSOL’s angle is different. It is building real utility surfaces around the token: agent payments, wallet rails, card spend, paid APIs, persistent memory, and commerce infrastructure.</p>
+      <p>Just as important, the thesis includes a treasury loop: revenue produced by those utilities does not just sit idle. It is meant to be returned into the token through market purchases and held in treasury, tying product usage back to ecosystem alignment.</p>
+      <p>The goal is simple: real usage first, stronger token gravity second.</p>
+      <p class="quote">Build the rails. Create usage. Reward alignment. Let the ecosystem compound.</p>
+    </section>
+
+    <div class="footer">Built with teeth. 🌑</div>
+  </main>
+</body>
+</html>
